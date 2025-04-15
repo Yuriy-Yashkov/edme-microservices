@@ -1,2 +1,3 @@
 rootProject.name = 'edme-microservices'
+include 'sales-point'
 
