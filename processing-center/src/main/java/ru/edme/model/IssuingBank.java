@@ -1,0 +1,32 @@
+package ru.edme.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class IssuingBank {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Size(max = 9, min = 9)
+    private String bic;
+
+    @Size(max = 5, min = 5)
+    private String bin;
+
+    @Size(max = 255)
+    private String abbreviatedName;
+}
