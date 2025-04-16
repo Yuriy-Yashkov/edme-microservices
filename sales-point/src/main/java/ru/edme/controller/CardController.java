@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.requestDTO.CardRequestDTO;
+import ru.edme.dto.responseDTO.CardResponseDTO;
 import ru.edme.model.Card;
 import ru.edme.service.CardAllService;
 
@@ -38,17 +40,18 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PostMapping
-    public ResponseEntity<Card> create(@RequestBody Card entity) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(entity));
+    public ResponseEntity<Card> create(@RequestBody CardRequestDTO cardRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(cardRequestDTO));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @Operation(summary = "Получить карту по ID", description = "Возвращает карту по её уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Карта найдена",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<Card> findById(@Positive @PathVariable("id") Long id) {
+    public ResponseEntity<CardResponseDTO> findById(@Positive @PathVariable("id") Long id) {
         return ResponseEntity.ok(cardAllService.findById(id));
     }
 
@@ -57,7 +60,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @GetMapping
-    public ResponseEntity<List<Card>> findAll() {
+    public ResponseEntity<List<CardResponseDTO>> findAll() {
         return ResponseEntity.ok(cardAllService.findAll());
     }
 
@@ -66,8 +69,8 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PutMapping
-    public ResponseEntity<Card> update(@RequestBody Card entity) {
-        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllService.update(entity));
+    public ResponseEntity<Card> update(@RequestBody CardRequestDTO cardRequestDTO) {
+        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllService.update(cardRequestDTO));
     }
 
     @Operation(summary = "Удалить карту", description = "Удаляет карту по её ID")

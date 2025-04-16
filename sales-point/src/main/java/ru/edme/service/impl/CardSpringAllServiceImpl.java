@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.edme.dto.requestDTO.CardRequestDTO;
+import ru.edme.dto.responseDTO.CardResponseDTO;
 import ru.edme.exception.EntityNotFoundException;
+import ru.edme.mapper.CardMapper;
+import ru.edme.mapper.PaymentSystemMapper;
 import ru.edme.model.Card;
 import ru.edme.model.PaymentSystem;
 import ru.edme.repository.CardRepository;
@@ -26,28 +29,34 @@ public class CardSpringAllServiceImpl implements CardAllService {
 
     private final CardRepository cardRepository;
     private final PaymentSystemRepository paymentSystemRepository;
+    private final CardMapper cardMapper;
+    private final PaymentSystemMapper paymentSystemMapper;
 
     @Override
     @Transactional
     @CachePut(value = "card", key = "#result.id")
-    public Card save(Card entity) {
-        if (!MoonAlgorithm.isValidMoon(entity.getCardNumber())) {
+    public Card save(CardRequestDTO cardRequestDTO) {
+        if (!MoonAlgorithm.isValidMoon(cardRequestDTO.getCardNumber())) {
             log.warn("Некорректный номер карты!");
             return Card.builder().build();
         }
+
         // Сохраняем вложенные объекты
-        PaymentSystem paymentSystem = paymentSystemRepository.save(entity.getPaymentSystem());
+        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystemRequestDTO());
+        PaymentSystem paymentSystemNew = paymentSystemRepository.save(paymentSystem);
 
-        entity.setPaymentSystem(paymentSystem);
+        Card card = cardMapper.toCard(cardRequestDTO);
+        card.setPaymentSystem(paymentSystemNew);
 
-        return cardRepository.save(entity);
+        return cardRepository.save(card);
     }
 
     @Override
     @Cacheable(value = "card", key = "#id")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    public Card findById(Long id) {
-        return cardRepository.findById(id).orElseThrow(
+    public CardResponseDTO findById(Long id) {
+        return cardRepository.findById(id)
+                .map(cardMapper::toCardResponseDto)
+                .orElseThrow(
                 () -> new EntityNotFoundException(
                         String.format("Не удалось прочитать объект! - %s = %d", Card.class.getSimpleName(), id))
         );
@@ -55,20 +64,21 @@ public class CardSpringAllServiceImpl implements CardAllService {
 
     @Override
     @Cacheable(value = "cards", key = "'all'")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    public List<Card> findAll() {
-        return cardRepository.findAll();
+    public List<CardResponseDTO> findAll() {
+        return cardRepository.findAll().stream()
+                .map(cardMapper::toCardResponseDto)
+                .toList();
     }
 
     @Override
     @Transactional
     @CachePut(value = "card", key = "#result.id")
-    public Card update(Card entity) {
-        Card card = findById(entity.getId());
-        card.setCardNumber(entity.getCardNumber());
-        card.setExpirationDate(entity.getExpirationDate());
-        card.setHolderName(entity.getHolderName());
-        card.setPaymentSystem(entity.getPaymentSystem());
+    public Card update(CardRequestDTO cardRequestDTO) {
+        Card card = cardMapper.toCard(findById(cardRequestDTO.getId()));
+        card.setCardNumber(cardRequestDTO.getCardNumber());
+        card.setExpirationDate(cardRequestDTO.getExpirationDate());
+        card.setHolderName(cardRequestDTO.getHolderName());
+        card.setPaymentSystem(paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystemRequestDTO()));
 
         return cardRepository.save(card);
     }
@@ -77,7 +87,7 @@ public class CardSpringAllServiceImpl implements CardAllService {
     @Transactional
     @CacheEvict(value = "card", key = "#id")
     public boolean delete(Long id) {
-        Card card = findById(id);
+        Card card = cardMapper.toCard(findById(id));
         cardRepository.delete(card);
 
         return true;

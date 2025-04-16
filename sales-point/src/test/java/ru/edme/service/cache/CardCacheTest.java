@@ -1,5 +1,6 @@
 package ru.edme.service.cache;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import ru.edme.dto.requestDTO.CardRequestDTO;
+import ru.edme.mapper.CardMapper;
 import ru.edme.model.Card;
 import ru.edme.repository.CardRepository;
 import ru.edme.service.CardAllService;
@@ -28,51 +31,61 @@ public class CardCacheTest {
 
     @MockBean
     private CardRepository cardRepository;
+    private static TestData data;
+
+    @Autowired
+    private CardMapper cardMapper;
+
+    @BeforeAll
+    static void setUpBeforeAll() {
+        data = new TestData();
+    }
 
     @Test
     void testFindByIdShouldUseCache() {
-        Card testEntity = new TestData().cardId;
+        Card card = data.cardId;
 
         // 1-й вызов — должен пойти в репозиторий
-        Mockito.when(cardRepository.findById(testEntity.getId()))
-                .thenReturn(Optional.of(testEntity));
+        Mockito.when(cardRepository.findById(card.getId()))
+                .thenReturn(Optional.of(card));
 
-        cardAllService.findById(testEntity.getId());
+        cardAllService.findById(card.getId());
 
         // 2-й вызов — должен взять из кэша, findById НЕ должен вызываться
-        cardAllService.findById(testEntity.getId());
+        cardAllService.findById(card.getId());
 
-        Mockito.verify(cardRepository, times(1)).findById(testEntity.getId());
+        Mockito.verify(cardRepository, times(1)).findById(card.getId());
     }
 
     @Test
     void testSaveShouldUpdateCache() {
-        Card saved = new TestData().cardId;
-        saved.setId(saved.getId() + 1);
+        CardRequestDTO requestDTO = data.cardRequestDTOId;
+        requestDTO.setId(requestDTO.getId() + 1);
+        Card card = cardMapper.toCard(requestDTO);
 
         Mockito.when(cardRepository.save(Mockito.any()))
-                .thenReturn(saved);
+                .thenReturn(card);
 
-        cardAllService.save(saved);
+        cardAllService.save(requestDTO);
 
         // Теперь должен быть кэширован
-        cardAllService.findById(saved.getId());
-        Mockito.verify(cardRepository, never()).findById(saved.getId());
+        cardAllService.findById(requestDTO.getId());
+        Mockito.verify(cardRepository, never()).findById(requestDTO.getId());
     }
 
     @Test
     void testDeleteShouldEvictCache() {
-        Card entity = new TestData().cardId;
-        entity.setId(entity.getId() + 2);
+        Card card = data.card;
+        card.setId(card.getId() + 2);
 
-        Mockito.when(cardRepository.findById(entity.getId()))
-                .thenReturn(Optional.of(entity));
+        Mockito.when(cardRepository.findById(card.getId()))
+                .thenReturn(Optional.of(card));
 
-        boolean deleted = cardAllService.delete(entity.getId());
+        boolean deleted = cardAllService.delete(card.getId());
         assertTrue(deleted);
 
         // После удаления вызов findById должен снова обратиться в репозиторий
-        cardAllService.findById(entity.getId());
-        Mockito.verify(cardRepository, times(2)).findById(entity.getId());
+        cardAllService.findById(card.getId());
+        Mockito.verify(cardRepository, times(2)).findById(card.getId());
     }
 }

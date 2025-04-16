@@ -7,6 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
+import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.mapper.PaymentSystemMapper;
 import ru.edme.model.PaymentSystem;
 import ru.edme.repository.PaymentSystemRepository;
 import ru.edme.service.impl.PaymentSystemSpringAllServiceImpl;
@@ -29,6 +32,9 @@ public class PaymentSystemCacheTest {
     @MockBean
     private PaymentSystemRepository paymentSystemRepository;
 
+    @Autowired
+    private PaymentSystemMapper paymentSystemMapper;
+
     @Test
     void testFindByIdShouldUseCache() {
         PaymentSystem testEntity = new PaymentSystem(10L, "VISA");
@@ -37,27 +43,29 @@ public class PaymentSystemCacheTest {
         Mockito.when(paymentSystemRepository.findById(10L))
                 .thenReturn(Optional.of(testEntity));
 
-        PaymentSystem firstCall = paymentSystemService.findById(10L);
+        PaymentSystemResponseDTO firstCall = paymentSystemService.findById(10L);
         assertEquals("VISA", firstCall.getPaymentSystemName());
 
         // 2-й вызов — должен взять из кэша, findById НЕ должен вызываться
-        PaymentSystem secondCall = paymentSystemService.findById(10L);
+        PaymentSystemResponseDTO secondCall = paymentSystemService.findById(10L);
 
         Mockito.verify(paymentSystemRepository, times(1)).findById(10L);
     }
 
     @Test
     void testSaveShouldUpdateCache() {
-        PaymentSystem saved = new PaymentSystem(20L, "Mastercard");
-        Mockito.when(paymentSystemRepository.save(Mockito.any()))
-                .thenReturn(saved);
+        PaymentSystemRequestDTO paymentSystemRequestDTO = new PaymentSystemRequestDTO(20L, "Mastercard");
+        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(paymentSystemRequestDTO);
 
-        PaymentSystem result = paymentSystemService.save(saved);
+        Mockito.when(paymentSystemRepository.save(Mockito.any()))
+                .thenReturn(paymentSystem);
+
+        PaymentSystem result = paymentSystemService.save(paymentSystemRequestDTO);
 
         assertEquals("Mastercard", result.getPaymentSystemName());
 
         // Теперь должен быть кэширован
-        PaymentSystem cached = paymentSystemService.findById(20L);
+        PaymentSystemResponseDTO cached = paymentSystemService.findById(20L);
         Mockito.verify(paymentSystemRepository, never()).findById(20L);
     }
 

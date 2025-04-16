@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.edme.PostgreSQLContainerInitializer;
+import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
+import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.mapper.PaymentSystemMapper;
 import ru.edme.model.PaymentSystem;
 import ru.edme.service.PaymentSystemAllService;
 import ru.edme.util.TestData;
@@ -19,10 +22,13 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
     @Autowired
     private PaymentSystemAllService paymentSystemAllService;
 
+    @Autowired
+    private PaymentSystemMapper paymentSystemMapper;
+
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        PaymentSystem paymentSystem = testData.paymentSystem;
+        PaymentSystemRequestDTO paymentSystem = testData.paymentSystemRequestDTO;
         long expected = 1;
 
         PaymentSystem paymentSystemSaved = paymentSystemAllService.save(paymentSystem);
@@ -33,7 +39,7 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        PaymentSystem actual = paymentSystemAllService.findById(1L);
+        PaymentSystemResponseDTO actual = paymentSystemAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -46,7 +52,7 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<PaymentSystem> paymentSystems = paymentSystemAllService.findAll();
+        List<PaymentSystemResponseDTO> paymentSystems = paymentSystemAllService.findAll();
         int actual = paymentSystems.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -54,11 +60,12 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
 
     @Test
     void updateTest() {
-        PaymentSystem actual = paymentSystemAllService.findById(1L);
+        PaymentSystemResponseDTO actual = paymentSystemAllService.findById(1L);
         actual.setPaymentSystemName("ZZZZZZZZZZZ");
+        PaymentSystemRequestDTO paymentSystemRequestDto = paymentSystemMapper.toPaymentSystemRequestDto(actual);
 
-        paymentSystemAllService.update(actual);
-        PaymentSystem expected = paymentSystemAllService.findById(1L);
+        paymentSystemAllService.update(paymentSystemRequestDto);
+        PaymentSystemResponseDTO expected = paymentSystemAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.edme.PostgreSQLContainerInitializer;
+import ru.edme.dto.requestDTO.CardRequestDTO;
+import ru.edme.dto.responseDTO.CardResponseDTO;
+import ru.edme.mapper.CardMapper;
 import ru.edme.model.Card;
 import ru.edme.service.CardAllService;
 import ru.edme.util.TestData;
@@ -19,10 +22,13 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Autowired
     private CardAllService cardAllService;
 
+    @Autowired
+    private CardMapper cardMapper;
+
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        Card card = testData.card;
+        CardRequestDTO card = testData.cardRequestDTO;
         long expected = 1;
 
         Card cardSaved = cardAllService.save(card);
@@ -33,7 +39,7 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        Card actual = cardAllService.findById(1L);
+        CardResponseDTO actual = cardAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -46,7 +52,7 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<Card> cardes = cardAllService.findAll();
+        List<CardResponseDTO> cardes = cardAllService.findAll();
         int actual = cardes.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -54,11 +60,12 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void updateTest() {
-        Card actual = cardAllService.findById(1L);
+        CardResponseDTO actual = cardAllService.findById(1L);
         actual.setHolderName("ZZZZZZZZZZZ");
+        CardRequestDTO cardRequestDto = cardMapper.toCardRequestDto(actual);
 
-        cardAllService.update(actual);
-        Card expected = cardAllService.findById(1L);
+        cardAllService.update(cardRequestDto);
+        CardResponseDTO expected = cardAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

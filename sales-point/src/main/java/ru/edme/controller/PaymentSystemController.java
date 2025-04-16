@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
+import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
 import ru.edme.model.PaymentSystem;
 import ru.edme.service.PaymentSystemAllService;
 
@@ -37,7 +39,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PostMapping
-    public ResponseEntity<PaymentSystem> create(@RequestBody PaymentSystem entity) {
+    public ResponseEntity<PaymentSystem> create(@RequestBody PaymentSystemRequestDTO entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentSystemAllService.save(entity));
     }
 
@@ -48,8 +50,9 @@ public class PaymentSystemController {
                     schema = @Schema(implementation = PaymentSystem.class)))
     @ApiResponse(responseCode = "404", description = "Платежная система не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentSystem> findById(@Parameter(description = "ID платежной системы", example = "1")
+    public ResponseEntity<PaymentSystemResponseDTO> findById(@Parameter(description = "ID платежной системы", example = "1")
 //                                                  @Positive
+                                                                 // TODO: 16.04.2025 Проверить Positive!
                                                   @PathVariable("id") Long id) {
         return ResponseEntity.ok(paymentSystemAllService.findById(id));
     }
@@ -59,7 +62,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @GetMapping
-    public ResponseEntity<List<PaymentSystem>> findAll() {
+    public ResponseEntity<List<PaymentSystemResponseDTO>> findAll() {
         return ResponseEntity.ok(paymentSystemAllService.findAll());
     }
 
@@ -68,7 +71,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PutMapping
-    public ResponseEntity<PaymentSystem> update(@RequestBody PaymentSystem entity) {
+    public ResponseEntity<PaymentSystem> update(@RequestBody PaymentSystemRequestDTO entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(paymentSystemAllService.update(entity));
     }
 
@@ -78,6 +81,7 @@ public class PaymentSystemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Parameter(description = "ID платежной системы", example = "1")
 //                                       @Positive
+                                           // TODO: 16.04.2025 Проверить Positive
                                        @PathVariable("id") Long id) {
         boolean delete = paymentSystemAllService.delete(id);
 
