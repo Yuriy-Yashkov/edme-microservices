@@ -1,4 +1,4 @@
-package ru.edme.dto.requestDTO;
+package ru.edme.dto.requestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentSystemRequestDTO {
+public class PaymentSystemRequestDto {
 
     private long id;
     private String paymentSystemName;

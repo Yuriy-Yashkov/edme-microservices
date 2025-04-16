@@ -1,9 +1,8 @@
 package ru.edme.service;
 
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
-import ru.edme.model.PaymentSystem;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 
-public interface PaymentSystemAllService extends AllService<Long, PaymentSystem, PaymentSystemRequestDTO, PaymentSystemResponseDTO> {
+public interface PaymentSystemAllService extends AllService<Long, PaymentSystemRequestDto, PaymentSystemResponseDto> {
 
 }

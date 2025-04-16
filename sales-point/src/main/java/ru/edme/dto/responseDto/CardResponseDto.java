@@ -1,4 +1,4 @@
-package ru.edme.dto.requestDTO;
+package ru.edme.dto.responseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,11 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardRequestDTO {
+public class CardResponseDto {
 
     private long id;
     private String cardNumber;
     private LocalDate expirationDate;
     private String holderName;
-    private PaymentSystemRequestDTO paymentSystemRequestDTO;
+    private PaymentSystemResponseDto paymentSystemResponseDTO;
 }

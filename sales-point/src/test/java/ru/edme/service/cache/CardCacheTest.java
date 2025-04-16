@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import ru.edme.dto.requestDTO.CardRequestDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
 import ru.edme.mapper.CardMapper;
 import ru.edme.model.Card;
 import ru.edme.repository.CardRepository;
@@ -59,7 +59,7 @@ public class CardCacheTest {
 
     @Test
     void testSaveShouldUpdateCache() {
-        CardRequestDTO requestDTO = data.cardRequestDTOId;
+        CardRequestDto requestDTO = data.cardRequestDtoId;
         requestDTO.setId(requestDTO.getId() + 1);
         Card card = cardMapper.toCard(requestDTO);
 

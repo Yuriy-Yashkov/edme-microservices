@@ -2,15 +2,15 @@ package ru.edme.service;
 
 import java.util.List;
 
-public interface AllService<K, T, U, E> {
+public interface AllService<K, U, E> {
 
-    T save(U entity);
+    E save(U entity);
 
     E findById(K id);
 
     List<E> findAll();
 
-    T update(U entity);
+    E update(U entity);
 
     boolean delete(K id);
 }

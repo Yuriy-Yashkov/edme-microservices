@@ -12,10 +12,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
 import ru.edme.mapper.CardMapper;
-import ru.edme.model.Card;
 import ru.edme.service.CardAllService;
 import ru.edme.util.TestData;
 
@@ -44,41 +43,40 @@ class CardControllerTest {
 
     @Test
     void create() throws Exception {
-        CardRequestDTO cardRequestDTO = testData.cardRequestDTO;
-        Card card = cardMapper.toCard(cardRequestDTO);
+        CardResponseDto cardResponseDtoId = testData.cardResponseDtoId;
 
-        String jsonRequest = objectMapper.writeValueAsString(cardRequestDTO);
+        String jsonRequest = objectMapper.writeValueAsString(cardResponseDtoId);
 
-        Mockito.when(cardAllService.save(any(CardRequestDTO.class))).thenReturn(card);
+        Mockito.when(cardAllService.save(any(CardRequestDto.class))).thenReturn(cardResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/cards")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(cardRequestDTO.getId()))
-                .andExpect(jsonPath("$.cardNumber").value(cardRequestDTO.getCardNumber()));
+                .andExpect(jsonPath("$.id").value(cardResponseDtoId.getId()))
+                .andExpect(jsonPath("$.cardNumber").value(cardResponseDtoId.getCardNumber()));
 
-        Mockito.verify(cardAllService, times(1)).save(any(CardRequestDTO.class));
+        Mockito.verify(cardAllService, times(1)).save(any(CardRequestDto.class));
     }
 
     @Test
     void findById() throws Exception {
-        CardResponseDTO cardResponseDTOId = testData.cardResponseDTOId;
-        Long id = cardResponseDTOId.getId();
+        CardResponseDto cardResponseDtoId = testData.cardResponseDtoId;
+        Long id = cardResponseDtoId.getId();
 
-        Mockito.when(cardAllService.findById(id)).thenReturn(cardResponseDTOId);
+        Mockito.when(cardAllService.findById(id)).thenReturn(cardResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/cards/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(cardResponseDTOId.getId()))
-                .andExpect(jsonPath("$.cardNumber").value(cardResponseDTOId.getCardNumber()));
+                .andExpect(jsonPath("$.id").value(cardResponseDtoId.getId()))
+                .andExpect(jsonPath("$.cardNumber").value(cardResponseDtoId.getCardNumber()));
 
         Mockito.verify(cardAllService, times(1)).findById(id);
     }
 
     @Test
     void findAll() throws Exception {
-        List<CardResponseDTO> cards = List.of(testData.cardResponseDTOId, testData.cardResponseDTOId);
+        List<CardResponseDto> cards = List.of(testData.cardResponseDtoId, testData.cardResponseDtoId);
 
         Mockito.when(cardAllService.findAll()).thenReturn(cards);
 
@@ -91,25 +89,24 @@ class CardControllerTest {
 
     @Test
     void update() throws Exception {
-        CardRequestDTO cardRequestDTOId = testData.cardRequestDTOId;
-        Card card = cardMapper.toCard(cardRequestDTOId);
-        String jsonRequest = objectMapper.writeValueAsString(cardRequestDTOId);
+        CardResponseDto cardResponseDtoId = testData.cardResponseDtoId;
+        String jsonRequest = objectMapper.writeValueAsString(cardResponseDtoId);
 
-        Mockito.when(cardAllService.update(any(CardRequestDTO.class))).thenReturn(card);
+        Mockito.when(cardAllService.update(any(CardRequestDto.class))).thenReturn(cardResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/cards")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isUpgradeRequired())
-                .andExpect(jsonPath("$.id").value(cardRequestDTOId.getId()))
-                .andExpect(jsonPath("$.cardNumber").value(cardRequestDTOId.getCardNumber()));
+                .andExpect(jsonPath("$.id").value(cardResponseDtoId.getId()))
+                .andExpect(jsonPath("$.cardNumber").value(cardResponseDtoId.getCardNumber()));
 
-        Mockito.verify(cardAllService, times(1)).update(any(CardRequestDTO.class));
+        Mockito.verify(cardAllService, times(1)).update(any(CardRequestDto.class));
     }
 
     @Test
     void deleteShouldReturnOk() throws Exception {
-        Long id = testData.cardRequestDTOId.getId();
+        Long id = testData.cardRequestDtoId.getId();
 
         Mockito.when(cardAllService.delete(id)).thenReturn(true);
 
@@ -121,7 +118,7 @@ class CardControllerTest {
 
     @Test
     void deleteShouldReturnNotFound() throws Exception {
-        Long id = testData.cardRequestDTOId.getId();
+        Long id = testData.cardRequestDtoId.getId();
 
         Mockito.when(cardAllService.delete(id)).thenReturn(false);
 

@@ -1,18 +1,18 @@
 package ru.edme.mapper;
 
 import org.mapstruct.Mapper;
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.model.PaymentSystem;
 
 @Mapper(componentModel = "spring")
 public interface PaymentSystemMapper {
 
-    PaymentSystem toPaymentSystem(PaymentSystemRequestDTO paymentSystemRequestDTO);
+    PaymentSystem toPaymentSystem(PaymentSystemRequestDto paymentSystemRequestDTO);
 
-    PaymentSystem toPaymentSystem(PaymentSystemResponseDTO paymentSystemResponseDTO);
+    PaymentSystem toPaymentSystem(PaymentSystemResponseDto paymentSystemResponseDTO);
 
-    PaymentSystemResponseDTO toPaymentSystemResponseDto(PaymentSystem paymentSystem);
+    PaymentSystemResponseDto toPaymentSystemResponseDto(PaymentSystem paymentSystem);
 
-    PaymentSystemRequestDTO toPaymentSystemRequestDto(PaymentSystemResponseDTO paymentSystemResponseDTO);
+    PaymentSystemRequestDto toPaymentSystemRequestDto(PaymentSystemResponseDto paymentSystemResponseDTO);
 }

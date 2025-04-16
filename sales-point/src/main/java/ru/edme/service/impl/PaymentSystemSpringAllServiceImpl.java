@@ -7,8 +7,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.exception.EntityNotFoundException;
 import ru.edme.mapper.PaymentSystemMapper;
 import ru.edme.model.PaymentSystem;
@@ -30,15 +30,16 @@ public class PaymentSystemSpringAllServiceImpl implements PaymentSystemAllServic
     @Override
     @Transactional
     @CachePut(value = "paymentSystem", key = "#result.id")
-    public PaymentSystem save(PaymentSystemRequestDTO paymentSystemRequestDTO) {
+    public PaymentSystemResponseDto save(PaymentSystemRequestDto paymentSystemRequestDTO) {
         PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(paymentSystemRequestDTO);
+        PaymentSystem saved = paymentSystemRepository.save(paymentSystem);
 
-        return paymentSystemRepository.save(paymentSystem);
+        return paymentSystemMapper.toPaymentSystemResponseDto(saved);
     }
 
     @Override
     @Cacheable(value = "paymentSystem", key = "#id")
-    public PaymentSystemResponseDTO findById(Long id) {
+    public PaymentSystemResponseDto findById(Long id) {
         log.info("Данные взяты из БД.");
 
         return paymentSystemRepository.findById(id)
@@ -51,7 +52,7 @@ public class PaymentSystemSpringAllServiceImpl implements PaymentSystemAllServic
 
     @Override
     @Cacheable(value = "paymentSystems", key = "'all'")
-    public List<PaymentSystemResponseDTO> findAll() {
+    public List<PaymentSystemResponseDto> findAll() {
         log.info("Данные взяты из БД.");
 
         return paymentSystemRepository.findAll().stream()
@@ -62,12 +63,13 @@ public class PaymentSystemSpringAllServiceImpl implements PaymentSystemAllServic
     @Override
     @Transactional
     @CachePut(value = "paymentSystem", key = "#entity.id")
-    public PaymentSystem update(PaymentSystemRequestDTO entity) {
+    public PaymentSystemResponseDto update(PaymentSystemRequestDto entity) {
         PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(findById(entity.getId()));
 
         paymentSystem.setPaymentSystemName(entity.getPaymentSystemName());
+        PaymentSystem saved = paymentSystemRepository.save(paymentSystem);
 
-        return paymentSystemRepository.save(paymentSystem);
+        return paymentSystemMapper.toPaymentSystemResponseDto(saved);
     }
 
     @Override

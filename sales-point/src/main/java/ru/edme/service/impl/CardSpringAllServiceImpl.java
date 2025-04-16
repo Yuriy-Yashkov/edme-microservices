@@ -7,8 +7,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
 import ru.edme.exception.EntityNotFoundException;
 import ru.edme.mapper.CardMapper;
 import ru.edme.mapper.PaymentSystemMapper;
@@ -35,10 +35,10 @@ public class CardSpringAllServiceImpl implements CardAllService {
     @Override
     @Transactional
     @CachePut(value = "card", key = "#result.id")
-    public Card save(CardRequestDTO cardRequestDTO) {
+    public CardResponseDto save(CardRequestDto cardRequestDTO) {
         if (!MoonAlgorithm.isValidMoon(cardRequestDTO.getCardNumber())) {
             log.warn("Некорректный номер карты!");
-            return Card.builder().build();
+            return CardResponseDto.builder().build();
         }
 
         // Сохраняем вложенные объекты
@@ -47,13 +47,14 @@ public class CardSpringAllServiceImpl implements CardAllService {
 
         Card card = cardMapper.toCard(cardRequestDTO);
         card.setPaymentSystem(paymentSystemNew);
+        Card saved = cardRepository.save(card);
 
-        return cardRepository.save(card);
+        return cardMapper.toCardResponseDto(saved);
     }
 
     @Override
     @Cacheable(value = "card", key = "#id")
-    public CardResponseDTO findById(Long id) {
+    public CardResponseDto findById(Long id) {
         return cardRepository.findById(id)
                 .map(cardMapper::toCardResponseDto)
                 .orElseThrow(
@@ -64,7 +65,7 @@ public class CardSpringAllServiceImpl implements CardAllService {
 
     @Override
     @Cacheable(value = "cards", key = "'all'")
-    public List<CardResponseDTO> findAll() {
+    public List<CardResponseDto> findAll() {
         return cardRepository.findAll().stream()
                 .map(cardMapper::toCardResponseDto)
                 .toList();
@@ -73,14 +74,15 @@ public class CardSpringAllServiceImpl implements CardAllService {
     @Override
     @Transactional
     @CachePut(value = "card", key = "#result.id")
-    public Card update(CardRequestDTO cardRequestDTO) {
+    public CardResponseDto update(CardRequestDto cardRequestDTO) {
         Card card = cardMapper.toCard(findById(cardRequestDTO.getId()));
         card.setCardNumber(cardRequestDTO.getCardNumber());
         card.setExpirationDate(cardRequestDTO.getExpirationDate());
         card.setHolderName(cardRequestDTO.getHolderName());
         card.setPaymentSystem(paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystemRequestDTO()));
+        Card saved = cardRepository.save(card);
 
-        return cardRepository.save(card);
+        return cardMapper.toCardResponseDto(saved);
     }
 
     @Override

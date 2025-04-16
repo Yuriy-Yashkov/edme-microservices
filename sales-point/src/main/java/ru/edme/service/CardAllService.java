@@ -1,9 +1,8 @@
 package ru.edme.service;
 
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
-import ru.edme.model.Card;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
 
-public interface CardAllService extends AllService<Long, Card, CardRequestDTO, CardResponseDTO> {
+public interface CardAllService extends AllService<Long, CardRequestDto, CardResponseDto> {
 
 }

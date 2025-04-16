@@ -1,18 +1,18 @@
 package ru.edme.mapper;
 
 import org.mapstruct.Mapper;
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
 import ru.edme.model.Card;
 
 @Mapper(componentModel = "spring")
 public interface CardMapper {
 
-    Card toCard(CardRequestDTO cardRequestDTO);
+    Card toCard(CardRequestDto cardRequestDTO);
 
-    Card toCard(CardResponseDTO cardResponseDTO);
+    Card toCard(CardResponseDto cardResponseDTO);
 
-    CardResponseDTO toCardResponseDto(Card card);
+    CardResponseDto toCardResponseDto(Card card);
 
-    CardRequestDTO toCardRequestDto(CardResponseDTO cardResponseDTO);
+    CardRequestDto toCardRequestDto(CardResponseDto cardResponseDTO);
 }

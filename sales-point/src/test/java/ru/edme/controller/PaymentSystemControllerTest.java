@@ -12,10 +12,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.mapper.PaymentSystemMapper;
-import ru.edme.model.PaymentSystem;
 import ru.edme.service.PaymentSystemAllService;
 import ru.edme.util.TestData;
 
@@ -44,25 +43,24 @@ class PaymentSystemControllerTest {
 
     @Test
     void create_ShouldReturnCreated() throws Exception {
-        PaymentSystemRequestDTO paymentSystemRequestDTO = testData.paymentSystemRequestDTO;
-        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(paymentSystemRequestDTO);
-        String jsonRequest = objectMapper.writeValueAsString(paymentSystemRequestDTO);
+        PaymentSystemResponseDto paymentSystemResponseDtoId = testData.paymentSystemResponseDtoId;
+        String jsonRequest = objectMapper.writeValueAsString(paymentSystemResponseDtoId);
 
-        Mockito.when(paymentSystemAllService.save(any(PaymentSystemRequestDTO.class))).thenReturn(paymentSystem);
+        Mockito.when(paymentSystemAllService.save(any(PaymentSystemRequestDto.class))).thenReturn(paymentSystemResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/cards/payment-system")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(paymentSystemRequestDTO.getId()))
-                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemRequestDTO.getPaymentSystemName()));
+                .andExpect(jsonPath("$.id").value(paymentSystemResponseDtoId.getId()))
+                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemResponseDtoId.getPaymentSystemName()));
 
-        Mockito.verify(paymentSystemAllService, times(1)).save(any(PaymentSystemRequestDTO.class));
+        Mockito.verify(paymentSystemAllService, times(1)).save(any(PaymentSystemRequestDto.class));
     }
 
     @Test
     void findById_ShouldReturnOk_WhenExists() throws Exception {
-        PaymentSystemResponseDTO paymentSystemResponseDTO = testData.paymentSystemResponseDTO;
+        PaymentSystemResponseDto paymentSystemResponseDTO = testData.paymentSystemResponseDto;
         Long id = paymentSystemResponseDTO.getId();
 
         Mockito.when(paymentSystemAllService.findById(id)).thenReturn(paymentSystemResponseDTO);
@@ -77,7 +75,7 @@ class PaymentSystemControllerTest {
 
     @Test
     void findAll_ShouldReturnOk() throws Exception {
-        List<PaymentSystemResponseDTO> paymentSystems = List.of(testData.paymentSystemResponseDTOId, testData.paymentSystemResponseDTOId);
+        List<PaymentSystemResponseDto> paymentSystems = List.of(testData.paymentSystemResponseDtoId, testData.paymentSystemResponseDtoId);
 
         Mockito.when(paymentSystemAllService.findAll()).thenReturn(paymentSystems);
 
@@ -90,25 +88,24 @@ class PaymentSystemControllerTest {
 
     @Test
     void update_ShouldReturnUpgradeRequired() throws Exception {
-        PaymentSystemRequestDTO paymentSystemRequestDTOId = testData.paymentSystemRequestDTOId;
-        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(paymentSystemRequestDTOId);
-        String jsonRequest = objectMapper.writeValueAsString(paymentSystemRequestDTOId);
+        PaymentSystemResponseDto paymentSystemResponseDtoId = testData.paymentSystemResponseDtoId;
+        String jsonRequest = objectMapper.writeValueAsString(paymentSystemResponseDtoId);
 
-        Mockito.when(paymentSystemAllService.update(any(PaymentSystemRequestDTO.class))).thenReturn(paymentSystem);
+        Mockito.when(paymentSystemAllService.update(any(PaymentSystemRequestDto.class))).thenReturn(paymentSystemResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/cards/payment-system")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isUpgradeRequired())
-                .andExpect(jsonPath("$.id").value(paymentSystemRequestDTOId.getId()))
-                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemRequestDTOId.getPaymentSystemName()));
+                .andExpect(jsonPath("$.id").value(paymentSystemResponseDtoId.getId()))
+                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemResponseDtoId.getPaymentSystemName()));
 
-        Mockito.verify(paymentSystemAllService, times(1)).update(any(PaymentSystemRequestDTO.class));
+        Mockito.verify(paymentSystemAllService, times(1)).update(any(PaymentSystemRequestDto.class));
     }
 
     @Test
     void delete_ShouldReturnOk_WhenExists() throws Exception {
-        Long id = testData.paymentSystemRequestDTOId.getId();
+        Long id = testData.paymentSystemRequestDtoId.getId();
 
         Mockito.when(paymentSystemAllService.delete(id)).thenReturn(true);
 
@@ -120,7 +117,7 @@ class PaymentSystemControllerTest {
 
     @Test
     void delete_ShouldReturnNotFound_WhenDoesNotExist() throws Exception {
-        Long id = testData.paymentSystemRequestDTOId.getId();
+        Long id = testData.paymentSystemRequestDtoId.getId();
 
         Mockito.when(paymentSystemAllService.delete(id)).thenReturn(false);
 

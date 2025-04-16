@@ -1,9 +1,9 @@
 package ru.edme.util;
 
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.model.Card;
 import ru.edme.model.PaymentSystem;
 
@@ -14,18 +14,18 @@ public class TestData {
     public PaymentSystem paymentSystem = PaymentSystem.builder()
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public PaymentSystemRequestDTO paymentSystemRequestDTO = PaymentSystemRequestDTO.builder()
+    public PaymentSystemRequestDto paymentSystemRequestDto = PaymentSystemRequestDto.builder()
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public PaymentSystemRequestDTO paymentSystemRequestDTOId = PaymentSystemRequestDTO.builder()
+    public PaymentSystemRequestDto paymentSystemRequestDtoId = PaymentSystemRequestDto.builder()
             .id(3L)
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public PaymentSystemResponseDTO paymentSystemResponseDTOId = PaymentSystemResponseDTO.builder()
+    public PaymentSystemResponseDto paymentSystemResponseDtoId = PaymentSystemResponseDto.builder()
             .id(3L)
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public PaymentSystemResponseDTO paymentSystemResponseDTO = PaymentSystemResponseDTO.builder()
+    public PaymentSystemResponseDto paymentSystemResponseDto = PaymentSystemResponseDto.builder()
             .paymentSystemName("Какая-то платёжная система")
             .build();
 
@@ -41,24 +41,24 @@ public class TestData {
             .holderName("Какое-то имя")
             .paymentSystem(paymentSystem)
             .build();
-    public CardRequestDTO cardRequestDTO = CardRequestDTO.builder()
+    public CardRequestDto cardRequestDto = CardRequestDto.builder()
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemRequestDTO(paymentSystemRequestDTO)
+            .paymentSystemRequestDTO(paymentSystemRequestDto)
             .build();
-    public CardRequestDTO cardRequestDTOId = CardRequestDTO.builder()
+    public CardRequestDto cardRequestDtoId = CardRequestDto.builder()
             .id(3L)
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemRequestDTO(paymentSystemRequestDTOId)
+            .paymentSystemRequestDTO(paymentSystemRequestDtoId)
             .build();
-    public CardResponseDTO cardResponseDTOId = CardResponseDTO.builder()
+    public CardResponseDto cardResponseDtoId = CardResponseDto.builder()
             .id(3L)
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemResponseDTO(paymentSystemResponseDTO)
+            .paymentSystemResponseDTO(paymentSystemResponseDto)
             .build();
 }

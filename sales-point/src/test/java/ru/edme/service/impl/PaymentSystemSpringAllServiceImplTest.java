@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.dto.requestDTO.PaymentSystemRequestDTO;
-import ru.edme.dto.responseDTO.PaymentSystemResponseDTO;
+import ru.edme.dto.requestDto.PaymentSystemRequestDto;
+import ru.edme.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.mapper.PaymentSystemMapper;
-import ru.edme.model.PaymentSystem;
 import ru.edme.service.PaymentSystemAllService;
 import ru.edme.util.TestData;
 
@@ -28,10 +27,10 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        PaymentSystemRequestDTO paymentSystem = testData.paymentSystemRequestDTO;
+        PaymentSystemRequestDto paymentSystem = testData.paymentSystemRequestDto;
         long expected = 1;
 
-        PaymentSystem paymentSystemSaved = paymentSystemAllService.save(paymentSystem);
+        PaymentSystemResponseDto paymentSystemSaved = paymentSystemAllService.save(paymentSystem);
         long actual = paymentSystemSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -39,7 +38,7 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        PaymentSystemResponseDTO actual = paymentSystemAllService.findById(1L);
+        PaymentSystemResponseDto actual = paymentSystemAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -52,7 +51,7 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<PaymentSystemResponseDTO> paymentSystems = paymentSystemAllService.findAll();
+        List<PaymentSystemResponseDto> paymentSystems = paymentSystemAllService.findAll();
         int actual = paymentSystems.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -60,12 +59,12 @@ class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializ
 
     @Test
     void updateTest() {
-        PaymentSystemResponseDTO actual = paymentSystemAllService.findById(1L);
+        PaymentSystemResponseDto actual = paymentSystemAllService.findById(1L);
         actual.setPaymentSystemName("ZZZZZZZZZZZ");
-        PaymentSystemRequestDTO paymentSystemRequestDto = paymentSystemMapper.toPaymentSystemRequestDto(actual);
+        PaymentSystemRequestDto paymentSystemRequestDto = paymentSystemMapper.toPaymentSystemRequestDto(actual);
 
         paymentSystemAllService.update(paymentSystemRequestDto);
-        PaymentSystemResponseDTO expected = paymentSystemAllService.findById(1L);
+        PaymentSystemResponseDto expected = paymentSystemAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

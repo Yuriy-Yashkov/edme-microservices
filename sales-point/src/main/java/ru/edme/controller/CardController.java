@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.edme.dto.requestDTO.CardRequestDTO;
-import ru.edme.dto.responseDTO.CardResponseDTO;
+import ru.edme.dto.requestDto.CardRequestDto;
+import ru.edme.dto.responseDto.CardResponseDto;
 import ru.edme.model.Card;
 import ru.edme.service.CardAllService;
 
@@ -40,7 +40,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PostMapping
-    public ResponseEntity<Card> create(@RequestBody CardRequestDTO cardRequestDTO) {
+    public ResponseEntity<CardResponseDto> create(@RequestBody CardRequestDto cardRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(cardRequestDTO));
     }
 
@@ -51,7 +51,7 @@ public class CardController {
                     schema = @Schema(implementation = Card.class)))
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<CardResponseDTO> findById(@Positive @PathVariable("id") Long id) {
+    public ResponseEntity<CardResponseDto> findById(@Positive @PathVariable("id") Long id) {
         return ResponseEntity.ok(cardAllService.findById(id));
     }
 
@@ -60,7 +60,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @GetMapping
-    public ResponseEntity<List<CardResponseDTO>> findAll() {
+    public ResponseEntity<List<CardResponseDto>> findAll() {
         return ResponseEntity.ok(cardAllService.findAll());
     }
 
@@ -69,7 +69,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PutMapping
-    public ResponseEntity<Card> update(@RequestBody CardRequestDTO cardRequestDTO) {
+    public ResponseEntity<CardResponseDto> update(@RequestBody CardRequestDto cardRequestDTO) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllService.update(cardRequestDTO));
     }
 
