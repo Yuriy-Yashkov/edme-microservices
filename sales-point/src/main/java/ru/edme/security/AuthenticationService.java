@@ -66,7 +66,7 @@ public class AuthenticationService {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUserLogin(), request.getPassword()));
 
-        UserAccess user = userAccessRepository.findByUserLogin(request.getUserLogin())// TODO: 06.04.2025 Наверное как-то можно удалить!
+        UserAccess user = userAccessRepository.findByUserLogin(request.getUserLogin())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
         String token = jwtService.generateToken(user);

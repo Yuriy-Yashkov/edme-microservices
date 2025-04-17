@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +52,7 @@ public class PaymentSystemController {
     @ApiResponse(responseCode = "404", description = "Платежная система не найдена")
     @GetMapping("/{id}")
     public ResponseEntity<PaymentSystemResponseDto> findById(@Parameter(description = "ID платежной системы", example = "1")
-//                                                  @Positive
-                                                                 // TODO: 16.04.2025 Проверить Positive!
+                                                  @Positive
                                                   @PathVariable("id") Long id) {
         return ResponseEntity.ok(paymentSystemAllService.findById(id));
     }
@@ -80,8 +80,7 @@ public class PaymentSystemController {
     @ApiResponse(responseCode = "404", description = "Платежная система не найдена")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Parameter(description = "ID платежной системы", example = "1")
-//                                       @Positive
-                                           // TODO: 16.04.2025 Проверить Positive
+                                       @Positive
                                        @PathVariable("id") Long id) {
         boolean delete = paymentSystemAllService.delete(id);
 

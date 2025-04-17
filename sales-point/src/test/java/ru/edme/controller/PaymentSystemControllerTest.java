@@ -60,15 +60,15 @@ class PaymentSystemControllerTest {
 
     @Test
     void findById_ShouldReturnOk_WhenExists() throws Exception {
-        PaymentSystemResponseDto paymentSystemResponseDTO = testData.paymentSystemResponseDto;
-        Long id = paymentSystemResponseDTO.getId();
+        PaymentSystemResponseDto paymentSystemResponseDtoId = testData.paymentSystemResponseDtoId;
+        Long id = paymentSystemResponseDtoId.getId();
 
-        Mockito.when(paymentSystemAllService.findById(id)).thenReturn(paymentSystemResponseDTO);
+        Mockito.when(paymentSystemAllService.findById(id)).thenReturn(paymentSystemResponseDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/cards/payment-system/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(paymentSystemResponseDTO.getId()))
-                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemResponseDTO.getPaymentSystemName()));
+                .andExpect(jsonPath("$.id").value(paymentSystemResponseDtoId.getId()))
+                .andExpect(jsonPath("$.paymentSystemName").value(paymentSystemResponseDtoId.getPaymentSystemName()));
 
         Mockito.verify(paymentSystemAllService, times(1)).findById(id);
     }
