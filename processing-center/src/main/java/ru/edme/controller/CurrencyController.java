@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.CurrencyDto;
 import ru.edme.model.Currency;
 import ru.edme.service.CurrencyAllService;
 
@@ -35,7 +36,7 @@ public class CurrencyController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Currency.class)))
     @PostMapping
-    public ResponseEntity<Currency> create(@RequestBody Currency entity) {
+    public ResponseEntity<CurrencyDto> create(@RequestBody CurrencyDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(currencyAllService.save(entity));
     }
 
@@ -45,8 +46,8 @@ public class CurrencyController {
                     schema = @Schema(implementation = Currency.class)))
     @ApiResponse(responseCode = "404", description = "Валюта не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<Currency> findById(@Parameter(description = "ID валюты", example = "1")
-                                             @PathVariable("id") Long id) {
+    public ResponseEntity<CurrencyDto> findById(@Parameter(description = "ID валюты", example = "1")
+                                                @PathVariable("id") Long id) {
         return ResponseEntity.ok(currencyAllService.findById(id));
     }
 
@@ -55,7 +56,7 @@ public class CurrencyController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Currency.class)))
     @GetMapping
-    public ResponseEntity<List<Currency>> findAll() {
+    public ResponseEntity<List<CurrencyDto>> findAll() {
         return ResponseEntity.ok(currencyAllService.findAll());
     }
 
@@ -64,7 +65,7 @@ public class CurrencyController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Currency.class)))
     @PutMapping
-    public ResponseEntity<Currency> update(@RequestBody Currency entity) {
+    public ResponseEntity<CurrencyDto> update(@RequestBody CurrencyDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(currencyAllService.update(entity));
     }
 

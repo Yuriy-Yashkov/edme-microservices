@@ -3,6 +3,8 @@ package ru.edme.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.edme.dto.CardStatusDto;
+import ru.edme.mapper.CardStatusMapper;
 import ru.edme.model.CardStatus;
 import ru.edme.repository.CardStatusRepository;
 import ru.edme.service.CardStatusAllService;
@@ -15,42 +17,54 @@ import java.util.List;
 public class CardStatusSpringAllServiceImpl implements CardStatusAllService {
 
     private final CardStatusRepository cardStatusRepository;
+    private final CardStatusMapper cardStatusMapper;
     private final Class<CardStatus> entityClass = CardStatus.class;
 
     @Override
     @Transactional
-    public CardStatus save(CardStatus entity) {
-        return cardStatusRepository.save(entity);
+    public CardStatusDto save(CardStatusDto entity) {
+        CardStatus cardStatus = cardStatusMapper.toCardStatus(entity);
+        CardStatus saved = cardStatusRepository.save(cardStatus);
+
+        return cardStatusMapper.toCardStatusDto(saved);
     }
 
     @Override
-    public CardStatus findById(Long id) {
-        return cardStatusRepository.findById(id).orElseThrow(
-                () -> new RuntimeException(
-                        String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
-        );
+    public CardStatusDto findById(Long id) {
+        return cardStatusRepository.findById(id)
+                .map(cardStatusMapper::toCardStatusDto)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
+                );
     }
 
     @Override
-    public List<CardStatus> findAll() {
-        return cardStatusRepository.findAll();
+    public List<CardStatusDto> findAll() {
+        return cardStatusRepository.findAll().stream()
+                .map(cardStatusMapper::toCardStatusDto)
+                .toList();
     }
 
     @Override
     @Transactional
-    public CardStatus update(CardStatus entity) {
+    public CardStatusDto update(CardStatusDto entity) {
 
-        CardStatus cardStatus = findById(entity.getId());
-        cardStatus.setCardStatusName(entity.getCardStatusName());
+        CardStatusDto cardStatusDto = findById(entity.getId());
+        cardStatusDto.setCardStatusName(entity.getCardStatusName());
+        CardStatus cardStatus = cardStatusMapper.toCardStatus(cardStatusDto);
+        CardStatus saved = cardStatusRepository.save(cardStatus);
 
-        return cardStatusRepository.save(cardStatus);
+        return cardStatusMapper.toCardStatusDto(saved);
     }
 
     @Override
     @Transactional
     public boolean delete(Long id) {
-        CardStatus cardStatusOld = findById(id);
-        cardStatusRepository.delete(cardStatusOld);
+        CardStatusDto cardStatusDto = findById(id);
+        CardStatus cardStatus = cardStatusMapper.toCardStatus(cardStatusDto);
+        cardStatusRepository.delete(cardStatus);
+
         return true;
     }
 }

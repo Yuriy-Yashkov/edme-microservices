@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.PaymentSystemDto;
 import ru.edme.model.PaymentSystem;
 import ru.edme.service.PaymentSystemAllService;
 
@@ -35,7 +36,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PostMapping
-    public ResponseEntity<PaymentSystem> create(@RequestBody PaymentSystem entity) {
+    public ResponseEntity<PaymentSystemDto> create(@RequestBody PaymentSystemDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentSystemAllService.save(entity));
     }
 
@@ -46,8 +47,8 @@ public class PaymentSystemController {
                     schema = @Schema(implementation = PaymentSystem.class)))
     @ApiResponse(responseCode = "404", description = "Платежная система не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentSystem> findById(@Parameter(description = "ID платежной системы", example = "1")
-                                                  @PathVariable("id") Long id) {
+    public ResponseEntity<PaymentSystemDto> findById(@Parameter(description = "ID платежной системы", example = "1")
+                                                     @PathVariable("id") Long id) {
         return ResponseEntity.ok(paymentSystemAllService.findById(id));
     }
 
@@ -56,7 +57,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @GetMapping
-    public ResponseEntity<List<PaymentSystem>> findAll() {
+    public ResponseEntity<List<PaymentSystemDto>> findAll() {
         return ResponseEntity.ok(paymentSystemAllService.findAll());
     }
 
@@ -65,7 +66,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PutMapping
-    public ResponseEntity<PaymentSystem> update(@RequestBody PaymentSystem entity) {
+    public ResponseEntity<PaymentSystemDto> update(@RequestBody PaymentSystemDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(paymentSystemAllService.update(entity));
     }
 

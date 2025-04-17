@@ -1,7 +1,7 @@
 package ru.edme.service;
 
-import ru.edme.model.Currency;
+import ru.edme.dto.CurrencyDto;
 
-public interface CurrencyAllService extends AllService<Long, Currency> {
+public interface CurrencyAllService extends AllService<Long, CurrencyDto> {
 
 }

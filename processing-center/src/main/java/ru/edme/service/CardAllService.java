@@ -1,7 +1,7 @@
 package ru.edme.service;
 
-import ru.edme.model.Card;
+import ru.edme.dto.CardDto;
 
-public interface CardAllService extends AllService<Long, Card> {
+public interface CardAllService extends AllService<Long, CardDto> {
 
 }

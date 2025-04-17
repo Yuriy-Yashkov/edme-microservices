@@ -3,6 +3,10 @@ package ru.edme.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.edme.dto.AccountDto;
+import ru.edme.mapper.AccountMapper;
+import ru.edme.mapper.CurrencyMapper;
+import ru.edme.mapper.IssuingBankMapper;
 import ru.edme.model.Account;
 import ru.edme.model.Currency;
 import ru.edme.model.IssuingBank;
@@ -21,24 +25,30 @@ public class AccountSpringAllServiceImpl implements AccountAllService {
     private final AccountRepository accountRepository;
     private final CurrencyRepository currencyRepository;
     private final IssuingBankRepository issuingBankRepository;
+    private final AccountMapper accountMapper;
+    private final CurrencyMapper currencyMapper;
+    private final IssuingBankMapper issuingBankMapper;
     private final Class<Account> entityClass = Account.class;
 
     @Override
     @Transactional
-    public Account save(Account entity) {
-        Currency currency = currencyRepository.save(entity.getCurrency());
-        IssuingBank issuingBank = issuingBankRepository.save(entity.getIssuingBank());
+    public AccountDto save(AccountDto entity) {
+        Currency currency = currencyRepository.save(currencyMapper.toCurrency(entity.getCurrency()));
+        IssuingBank issuingBank = issuingBankRepository.save(issuingBankMapper.toIssuingBank(entity.getIssuingBank()));
 
-        entity.setCurrency(currency);
-        entity.setIssuingBank(issuingBank);
+        entity.setCurrency(currencyMapper.toCurrencyDto(currency));
+        entity.setIssuingBank(issuingBankMapper.toIssuingBankDto(issuingBank));
 
-        return accountRepository.save(entity);
+        Account account = accountMapper.toAccount(entity);
+        Account saved = accountRepository.save(account);
+
+        return accountMapper.toAccountDto(saved);
     }
 
     @Override
-    public Account findById(Long id) {
-
+    public AccountDto findById(Long id) {
         return accountRepository.findById(id)
+                .map(accountMapper::toAccountDto)
                 .orElseThrow(
                         () -> new RuntimeException(
                                 String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
@@ -46,26 +56,31 @@ public class AccountSpringAllServiceImpl implements AccountAllService {
     }
 
     @Override
-    public List<Account> findAll() {
-        return accountRepository.findAll();
+    public List<AccountDto> findAll() {
+        return accountRepository.findAll().stream()
+                .map(accountMapper::toAccountDto)
+                .toList();
     }
 
     @Override
     @Transactional
-    public Account update(Account entity) {
-        Account account = findById(entity.getId());
-        account.setAccountNumber(entity.getAccountNumber());
-        account.setBalance(entity.getBalance());
-        account.setCurrency(entity.getCurrency());
-        account.setIssuingBank(entity.getIssuingBank());
+    public AccountDto update(AccountDto entity) {
+        AccountDto accountDto = findById(entity.getId());
+        accountDto.setAccountNumber(entity.getAccountNumber());
+        accountDto.setBalance(entity.getBalance());
+        accountDto.setCurrency(entity.getCurrency());
+        accountDto.setIssuingBank(entity.getIssuingBank());
+        Account account = accountMapper.toAccount(accountDto);
+        Account saved = accountRepository.save(account);
 
-        return accountRepository.save(account);
+        return accountMapper.toAccountDto(saved);
     }
 
     @Override
     @Transactional
     public boolean delete(Long id) {
-        Account account = findById(id);
+        AccountDto accountDto = findById(id);
+        Account account = accountMapper.toAccount(accountDto);
         accountRepository.delete(account);
 
         return true;

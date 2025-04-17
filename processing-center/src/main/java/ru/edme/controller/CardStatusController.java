@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.CardStatusDto;
 import ru.edme.model.CardStatus;
 import ru.edme.service.CardStatusAllService;
 
@@ -35,7 +36,7 @@ public class CardStatusController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = CardStatus.class)))
     @PostMapping
-    public ResponseEntity<CardStatus> create(@RequestBody CardStatus entity) {
+    public ResponseEntity<CardStatusDto> create(@RequestBody CardStatusDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardStatusAllService.save(entity));
     }
 
@@ -46,8 +47,8 @@ public class CardStatusController {
                     schema = @Schema(implementation = CardStatus.class)))
     @ApiResponse(responseCode = "404", description = "Статус карты не найден")
     @GetMapping("/{id}")
-    public ResponseEntity<CardStatus> findById(@Parameter(description = "ID статуса карты", example = "1")
-                                               @PathVariable("id") Long id) {
+    public ResponseEntity<CardStatusDto> findById(@Parameter(description = "ID статуса карты", example = "1")
+                                                  @PathVariable("id") Long id) {
         return ResponseEntity.ok(cardStatusAllService.findById(id));
     }
 
@@ -56,7 +57,7 @@ public class CardStatusController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = CardStatus.class)))
     @GetMapping
-    public ResponseEntity<List<CardStatus>> findAll() {
+    public ResponseEntity<List<CardStatusDto>> findAll() {
         return ResponseEntity.ok(cardStatusAllService.findAll());
     }
 
@@ -65,7 +66,7 @@ public class CardStatusController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = CardStatus.class)))
     @PutMapping
-    public ResponseEntity<CardStatus> update(@RequestBody CardStatus entity) {
+    public ResponseEntity<CardStatusDto> update(@RequestBody CardStatusDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardStatusAllService.update(entity));
     }
 

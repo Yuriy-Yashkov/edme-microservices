@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CardStatusDto {
+
     private long id;
 
     @Size(max = 255)

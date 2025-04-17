@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.CardDto;
 import ru.edme.model.Card;
 import ru.edme.service.CardAllService;
 
@@ -35,7 +36,8 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PostMapping
-    public ResponseEntity<Card> create(@Parameter(description = "ID карты", example = "1") @RequestBody Card entity) {
+    public ResponseEntity<CardDto> create(@Parameter(description = "ID карты", example = "1")
+                                          @RequestBody CardDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(entity));
     }
 
@@ -45,7 +47,7 @@ public class CardController {
                     schema = @Schema(implementation = Card.class)))
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @GetMapping("/{id}")
-    public ResponseEntity<Card> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<CardDto> findById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(cardAllService.findById(id));
     }
 
@@ -54,7 +56,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @GetMapping
-    public ResponseEntity<List<Card>> findAll() {
+    public ResponseEntity<List<CardDto>> findAll() {
         return ResponseEntity.ok(cardAllService.findAll());
     }
 
@@ -63,7 +65,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PutMapping
-    public ResponseEntity<Card> update(@RequestBody Card entity) {
+    public ResponseEntity<CardDto> update(@RequestBody CardDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllService.update(entity));
     }
 
@@ -71,7 +73,8 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "Карта успешно удалена")
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID карты", example = "1") @PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@Parameter(description = "ID карты", example = "1")
+                                       @PathVariable("id") Long id) {
         boolean delete = cardAllService.delete(id);
 
         return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();

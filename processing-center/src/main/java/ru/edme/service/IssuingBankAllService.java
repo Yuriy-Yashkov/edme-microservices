@@ -1,7 +1,7 @@
 package ru.edme.service;
 
-import ru.edme.model.IssuingBank;
+import ru.edme.dto.IssuingBankDto;
 
-public interface IssuingBankAllService extends AllService<Long, IssuingBank> {
+public interface IssuingBankAllService extends AllService<Long, IssuingBankDto> {
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.IssuingBankDto;
 import ru.edme.model.IssuingBank;
 import ru.edme.service.IssuingBankAllService;
 
@@ -35,7 +36,7 @@ public class IssuingBankController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuingBank.class)))
     @PostMapping
-    public ResponseEntity<IssuingBank> create(@RequestBody IssuingBank entity) {
+    public ResponseEntity<IssuingBankDto> create(@RequestBody IssuingBankDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(issuingBankAllService.save(entity));
     }
 
@@ -45,8 +46,8 @@ public class IssuingBankController {
                     schema = @Schema(implementation = IssuingBank.class)))
     @ApiResponse(responseCode = "404", description = "Банк-эмитент не найден")
     @GetMapping("/{id}")
-    public ResponseEntity<IssuingBank> findById(@Parameter(description = "ID банка-эмитента", example = "1")
-                                                @PathVariable("id") Long id) {
+    public ResponseEntity<IssuingBankDto> findById(@Parameter(description = "ID банка-эмитента", example = "1")
+                                                   @PathVariable("id") Long id) {
         return ResponseEntity.ok(issuingBankAllService.findById(id));
     }
 
@@ -55,7 +56,7 @@ public class IssuingBankController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuingBank.class)))
     @GetMapping
-    public ResponseEntity<List<IssuingBank>> findAll() {
+    public ResponseEntity<List<IssuingBankDto>> findAll() {
         return ResponseEntity.ok(issuingBankAllService.findAll());
     }
 
@@ -64,7 +65,7 @@ public class IssuingBankController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuingBank.class)))
     @PutMapping
-    public ResponseEntity<IssuingBank> update(@RequestBody IssuingBank entity) {
+    public ResponseEntity<IssuingBankDto> update(@RequestBody IssuingBankDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(issuingBankAllService.update(entity));
     }
 
