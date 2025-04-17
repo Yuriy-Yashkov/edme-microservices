@@ -13,6 +13,7 @@ import java.util.List;
 
 @SpringBootTest
 class PaymentSystemSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
+
     @Autowired
     private PaymentSystemAllService paymentSystemAllService;
 

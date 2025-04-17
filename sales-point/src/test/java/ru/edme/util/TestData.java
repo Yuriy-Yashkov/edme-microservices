@@ -45,20 +45,20 @@ public class TestData {
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemRequestDTO(paymentSystemRequestDto)
+            .paymentSystem(paymentSystemRequestDto)
             .build();
     public CardRequestDto cardRequestDtoId = CardRequestDto.builder()
             .id(3L)
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemRequestDTO(paymentSystemRequestDtoId)
+            .paymentSystem(paymentSystemRequestDtoId)
             .build();
     public CardResponseDto cardResponseDtoId = CardResponseDto.builder()
             .id(3L)
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .paymentSystemResponseDTO(paymentSystemResponseDto)
+            .paymentSystem(paymentSystemResponseDto)
             .build();
 }

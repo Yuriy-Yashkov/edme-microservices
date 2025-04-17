@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +26,12 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Size(max = 50)
     private String cardNumber;
     private LocalDate expirationDate;
+
+    @Size(max = 50)
     private String holderName;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})

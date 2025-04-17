@@ -46,7 +46,7 @@ public class IssuingBankController {
     @ApiResponse(responseCode = "404", description = "Банк-эмитент не найден")
     @GetMapping("/{id}")
     public ResponseEntity<IssuingBank> findById(@Parameter(description = "ID банка-эмитента", example = "1")
-                                         @PathVariable("id") Long id) {
+                                                @PathVariable("id") Long id) {
         return ResponseEntity.ok(issuingBankAllService.findById(id));
     }
 

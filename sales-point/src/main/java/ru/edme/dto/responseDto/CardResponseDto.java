@@ -17,5 +17,5 @@ public class CardResponseDto {
     private String cardNumber;
     private LocalDate expirationDate;
     private String holderName;
-    private PaymentSystemResponseDto paymentSystemResponseDTO;
+    private PaymentSystemResponseDto paymentSystem;
 }

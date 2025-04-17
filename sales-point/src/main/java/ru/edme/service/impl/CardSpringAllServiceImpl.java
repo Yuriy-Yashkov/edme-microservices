@@ -42,7 +42,7 @@ public class CardSpringAllServiceImpl implements CardAllService {
         }
 
         // Сохраняем вложенные объекты
-        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystemRequestDTO());
+        PaymentSystem paymentSystem = paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystem());
         PaymentSystem paymentSystemNew = paymentSystemRepository.save(paymentSystem);
 
         Card card = cardMapper.toCard(cardRequestDTO);
@@ -58,9 +58,9 @@ public class CardSpringAllServiceImpl implements CardAllService {
         return cardRepository.findById(id)
                 .map(cardMapper::toCardResponseDto)
                 .orElseThrow(
-                () -> new EntityNotFoundException(
-                        String.format("Не удалось прочитать объект! - %s = %d", Card.class.getSimpleName(), id))
-        );
+                        () -> new EntityNotFoundException(
+                                String.format("Не удалось прочитать объект! - %s = %d", Card.class.getSimpleName(), id))
+                );
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CardSpringAllServiceImpl implements CardAllService {
         card.setCardNumber(cardRequestDTO.getCardNumber());
         card.setExpirationDate(cardRequestDTO.getExpirationDate());
         card.setHolderName(cardRequestDTO.getHolderName());
-        card.setPaymentSystem(paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystemRequestDTO()));
+        card.setPaymentSystem(paymentSystemMapper.toPaymentSystem(cardRequestDTO.getPaymentSystem()));
         Card saved = cardRepository.save(card);
 
         return cardMapper.toCardResponseDto(saved);

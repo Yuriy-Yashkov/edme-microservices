@@ -1,9 +1,5 @@
-package ru.edme.model;
+package ru.edme.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardStatus {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CardStatusDto {
     private long id;
 
     @Size(max = 255)

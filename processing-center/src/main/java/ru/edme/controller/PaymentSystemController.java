@@ -47,7 +47,7 @@ public class PaymentSystemController {
     @ApiResponse(responseCode = "404", description = "Платежная система не найдена")
     @GetMapping("/{id}")
     public ResponseEntity<PaymentSystem> findById(@Parameter(description = "ID платежной системы", example = "1")
-                                           @PathVariable("id") Long id) {
+                                                  @PathVariable("id") Long id) {
         return ResponseEntity.ok(paymentSystemAllService.findById(id));
     }
 
