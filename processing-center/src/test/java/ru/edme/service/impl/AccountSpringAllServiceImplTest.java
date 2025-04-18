@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.model.Account;
+import ru.edme.dto.AccountDto;
 import ru.edme.service.AccountAllService;
 import ru.edme.util.TestData;
 
@@ -24,10 +24,10 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        Account account = testData.account;
+        AccountDto accountDto = testData.accountDto;
         long expected = 1;
 
-        Account accountSaved = accountAllService.save(account);
+        AccountDto accountSaved = accountAllService.save(accountDto);
         long actual = accountSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -35,7 +35,7 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        Account actual = accountAllService.findById(1L);
+        AccountDto actual = accountAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -48,7 +48,7 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<Account> accountes = accountAllService.findAll();
+        List<AccountDto> accountes = accountAllService.findAll();
         int actual = accountes.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -56,11 +56,11 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void updateTest() {
-        Account actual = accountAllService.findById(1L);
+        AccountDto actual = accountAllService.findById(1L);
         actual.setBalance(new BigDecimal("1000.0"));
 
         accountAllService.update(actual);
-        Account expected = accountAllService.findById(1L);
+        AccountDto expected = accountAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

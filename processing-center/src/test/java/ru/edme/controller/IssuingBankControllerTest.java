@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.edme.model.IssuingBank;
+import ru.edme.dto.IssuingBankDto;
 import ru.edme.service.IssuingBankAllService;
 import ru.edme.util.TestData;
 
@@ -36,32 +36,32 @@ class IssuingBankControllerTest {
 
     @Test
     void createShouldReturnCreated() throws Exception {
-        IssuingBank bank = testData.issuingBank;
-        String jsonRequest = objectMapper.writeValueAsString(bank);
+        IssuingBankDto issuingBankDto = testData.issuingBankDto;
+        String jsonRequest = objectMapper.writeValueAsString(issuingBankDto);
 
-        Mockito.when(issuingBankAllService.save(any(IssuingBank.class))).thenReturn(bank);
+        Mockito.when(issuingBankAllService.save(any(IssuingBankDto.class))).thenReturn(issuingBankDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/cards/accounts/issuing-banks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(bank.getId()))
-                .andExpect(jsonPath("$.abbreviatedName").value(bank.getAbbreviatedName()));
+                .andExpect(jsonPath("$.id").value(issuingBankDto.getId()))
+                .andExpect(jsonPath("$.abbreviatedName").value(issuingBankDto.getAbbreviatedName()));
 
-        Mockito.verify(issuingBankAllService, times(1)).save(any(IssuingBank.class));
+        Mockito.verify(issuingBankAllService, times(1)).save(any(IssuingBankDto.class));
     }
 
     @Test
     void findByIdShouldReturnOk() throws Exception {
-        IssuingBank bank = testData.issuingBank;
-        Long id = bank.getId();
+        IssuingBankDto issuingBankDto = testData.issuingBankDto;
+        Long id = issuingBankDto.getId();
 
-        Mockito.when(issuingBankAllService.findById(id)).thenReturn(bank);
+        Mockito.when(issuingBankAllService.findById(id)).thenReturn(issuingBankDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/cards/accounts/issuing-banks/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(bank.getId()))
-                .andExpect(jsonPath("$.abbreviatedName").value(bank.getAbbreviatedName()));
+                .andExpect(jsonPath("$.id").value(issuingBankDto.getId()))
+                .andExpect(jsonPath("$.abbreviatedName").value(issuingBankDto.getAbbreviatedName()));
 
         Mockito.verify(issuingBankAllService, times(1)).findById(id);
     }
@@ -79,7 +79,7 @@ class IssuingBankControllerTest {
 
     @Test
     void findAllShouldReturnOk() throws Exception {
-        List<IssuingBank> banks = List.of(testData.issuingBank, testData.issuingBankId);
+        List<IssuingBankDto> banks = List.of(testData.issuingBankDto, testData.issuingBankDto);
 
         Mockito.when(issuingBankAllService.findAll()).thenReturn(banks);
 
@@ -92,24 +92,24 @@ class IssuingBankControllerTest {
 
     @Test
     void updateShouldReturnUpgradeRequired() throws Exception {
-        IssuingBank updatedBank = testData.issuingBank;
-        String jsonRequest = objectMapper.writeValueAsString(updatedBank);
+        IssuingBankDto issuingBankDto = testData.issuingBankDto;
+        String jsonRequest = objectMapper.writeValueAsString(issuingBankDto);
 
-        Mockito.when(issuingBankAllService.update(any(IssuingBank.class))).thenReturn(updatedBank);
+        Mockito.when(issuingBankAllService.update(any(IssuingBankDto.class))).thenReturn(issuingBankDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/cards/accounts/issuing-banks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isUpgradeRequired())
-                .andExpect(jsonPath("$.id").value(updatedBank.getId()))
-                .andExpect(jsonPath("$.abbreviatedName").value(updatedBank.getAbbreviatedName()));
+                .andExpect(jsonPath("$.id").value(issuingBankDto.getId()))
+                .andExpect(jsonPath("$.abbreviatedName").value(issuingBankDto.getAbbreviatedName()));
 
-        Mockito.verify(issuingBankAllService, times(1)).update(any(IssuingBank.class));
+        Mockito.verify(issuingBankAllService, times(1)).update(any(IssuingBankDto.class));
     }
 
     @Test
     void deleteShouldReturnOk() throws Exception {
-        Long id = testData.issuingBank.getId();
+        Long id = testData.issuingBankDto.getId();
 
         Mockito.when(issuingBankAllService.delete(id)).thenReturn(true);
 
@@ -121,7 +121,7 @@ class IssuingBankControllerTest {
 
     @Test
     void deleteShouldReturnNotFound() throws Exception {
-        Long id = testData.issuingBank.getId();
+        Long id = testData.issuingBankDto.getId();
 
         Mockito.when(issuingBankAllService.delete(id)).thenReturn(false);
 

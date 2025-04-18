@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.edme.model.CardStatus;
+import ru.edme.dto.CardStatusDto;
 import ru.edme.service.CardStatusAllService;
 import ru.edme.util.TestData;
 
@@ -39,30 +39,30 @@ class CardStatusControllerTest {
 
     @Test
     void create_ShouldReturnCreatedStatus() throws Exception {
-        CardStatus status = new CardStatus(1L, "ACTIVE");
-        String jsonRequest = objectMapper.writeValueAsString(status);
+        CardStatusDto cardStatusDto = new CardStatusDto(1L, "ACTIVE");
+        String jsonRequest = objectMapper.writeValueAsString(cardStatusDto);
 
-        when(cardStatusAllService.save(any(CardStatus.class))).thenReturn(status);
+        when(cardStatusAllService.save(any(CardStatusDto.class))).thenReturn(cardStatusDto);
 
         mockMvc.perform(post("/v1/cards/card-statuses")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(status.getId()))
-                .andExpect(jsonPath("$.cardStatusName").value(status.getCardStatusName()));
+                .andExpect(jsonPath("$.id").value(cardStatusDto.getId()))
+                .andExpect(jsonPath("$.cardStatusName").value(cardStatusDto.getCardStatusName()));
     }
 
     @Test
     void findById_ShouldReturnCardStatus_WhenExists() throws Exception {
-        CardStatus status = testData.cardStatusId;
-        Long id = status.getId();
+        CardStatusDto cardStatusDtoId = testData.cardStatusDtoId;
+        Long id = cardStatusDtoId.getId();
 
-        Mockito.when(cardStatusAllService.findById(id)).thenReturn(status);
+        Mockito.when(cardStatusAllService.findById(id)).thenReturn(cardStatusDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/cards/card-statuses/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(status.getId()))
-                .andExpect(jsonPath("$.cardStatusName").value(status.getCardStatusName()));
+                .andExpect(jsonPath("$.id").value(cardStatusDtoId.getId()))
+                .andExpect(jsonPath("$.cardStatusName").value(cardStatusDtoId.getCardStatusName()));
 
         Mockito.verify(cardStatusAllService, times(1)).findById(id);
     }
@@ -77,7 +77,7 @@ class CardStatusControllerTest {
 
     @Test
     void findAll_ShouldReturnListOfCardStatuses() throws Exception {
-        List<CardStatus> statuses = List.of(testData.cardStatusId, testData.cardStatus);
+        List<CardStatusDto> statuses = List.of(testData.cardStatusDtoId, testData.cardStatusDtoId);
 
         when(cardStatusAllService.findAll()).thenReturn(statuses);
 
@@ -88,16 +88,16 @@ class CardStatusControllerTest {
 
     @Test
     void update_ShouldReturnUpgradeRequired() throws Exception {
-        CardStatus status = testData.cardStatusId;
+        CardStatusDto cardStatusDtoId = testData.cardStatusDtoId;
 
-        when(cardStatusAllService.update(any(CardStatus.class))).thenReturn(status);
+        when(cardStatusAllService.update(any(CardStatusDto.class))).thenReturn(cardStatusDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/cards/card-statuses")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(status)))
+                        .content(objectMapper.writeValueAsString(cardStatusDtoId)))
                 .andExpect(status().isUpgradeRequired())
-                .andExpect(jsonPath("$.id").value(status.getId()))
-                .andExpect(jsonPath("$.cardStatusName").value(status.getCardStatusName()));
+                .andExpect(jsonPath("$.id").value(cardStatusDtoId.getId()))
+                .andExpect(jsonPath("$.cardStatusName").value(cardStatusDtoId.getCardStatusName()));
     }
 
     @Test

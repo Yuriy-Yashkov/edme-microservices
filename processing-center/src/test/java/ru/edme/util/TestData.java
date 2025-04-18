@@ -1,11 +1,11 @@
 package ru.edme.util;
 
-import ru.edme.model.Account;
-import ru.edme.model.Card;
-import ru.edme.model.CardStatus;
-import ru.edme.model.Currency;
-import ru.edme.model.IssuingBank;
-import ru.edme.model.PaymentSystem;
+import ru.edme.dto.AccountDto;
+import ru.edme.dto.CardDto;
+import ru.edme.dto.CardStatusDto;
+import ru.edme.dto.CurrencyDto;
+import ru.edme.dto.IssuingBankDto;
+import ru.edme.dto.PaymentSystemDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,73 +13,73 @@ import java.time.LocalDateTime;
 
 public class TestData {
 
-    public CardStatus cardStatus = CardStatus.builder()
+    public CardStatusDto cardStatusDto = CardStatusDto.builder()
             .cardStatusName("Какой-то статус")
             .build();
-    public CardStatus cardStatusId = CardStatus.builder()
+    public CardStatusDto cardStatusDtoId = CardStatusDto.builder()
             .id(3L)
             .cardStatusName("Какой-то статус")
             .build();
-    public PaymentSystem paymentSystem = PaymentSystem.builder()
+    public PaymentSystemDto paymentSystemDto = PaymentSystemDto.builder()
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public PaymentSystem paymentSystemId = PaymentSystem.builder()
+    public PaymentSystemDto paymentSystemDtoId = PaymentSystemDto.builder()
             .id(3L)
             .paymentSystemName("Какая-то платёжная система")
             .build();
-    public IssuingBank issuingBank = IssuingBank.builder()
+    public IssuingBankDto issuingBankDto = IssuingBankDto.builder()
             .bic("123456789")
             .bin("12345")
             .abbreviatedName("Какая-то аббревиатура")
             .build();
-    public IssuingBank issuingBankId = IssuingBank.builder()
+    public IssuingBankDto issuingBankDtoId = IssuingBankDto.builder()
             .id(3L)
             .bic("123456789")
             .bin("12345")
             .abbreviatedName("Какая-то аббревиатура")
             .build();
-    public Currency currency = Currency.builder()
+    public CurrencyDto currencyDto = CurrencyDto.builder()
             .currencyDigitalCode("123")
             .currencyLetterCode("000")
             .currencyName("Какая-то валюта")
             .build();
-    public Currency currencyId = Currency.builder()
+    public CurrencyDto currencyDtoId = CurrencyDto.builder()
             .id(3L)
             .currencyDigitalCode("123")
             .currencyLetterCode("000")
             .currencyName("Какая-то валюта")
             .build();
-    public Account account = Account.builder()
+    public AccountDto accountDto = AccountDto.builder()
             .accountNumber("Какой-то номер")
             .balance(new BigDecimal("50.0"))
-            .currency(currency)
-            .issuingBank(issuingBank)
+            .currency(currencyDto)
+            .issuingBank(issuingBankDto)
             .build();
-    public Account accountId = Account.builder()
+    public AccountDto accountDtoId = AccountDto.builder()
             .id(3L)
             .accountNumber("Какой-то номер")
             .balance(new BigDecimal("50.0"))
-            .currency(currencyId)
-            .issuingBank(issuingBankId)
+            .currency(currencyDtoId)
+            .issuingBank(issuingBankDtoId)
             .build();
-    public Card card = Card.builder()
+    public CardDto cardDto = CardDto.builder()
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .cardStatus(cardStatus)
-            .paymentSystem(paymentSystem)
-            .account(account)
+            .cardStatus(cardStatusDto)
+            .paymentSystem(paymentSystemDto)
+            .account(accountDto)
             .receivedFromIssuingBank(LocalDateTime.of(2024, 3, 13, 14, 30, 15))
             .sentToIssuingBank(LocalDateTime.of(2024, 3, 13, 14, 30, 15))
             .build();
-    public Card cardId = Card.builder()
+    public CardDto cardDtoId = CardDto.builder()
             .id(3L)
             .cardNumber(MoonAlgorithm.generateMoonNumber(16))
             .expirationDate(LocalDate.now())
             .holderName("Какое-то имя")
-            .cardStatus(cardStatusId)
-            .paymentSystem(paymentSystemId)
-            .account(accountId)
+            .cardStatus(cardStatusDtoId)
+            .paymentSystem(paymentSystemDtoId)
+            .account(accountDtoId)
             .receivedFromIssuingBank(LocalDateTime.of(2024, 3, 13, 14, 30, 15))
             .sentToIssuingBank(LocalDateTime.of(2024, 3, 13, 14, 30, 15))
             .build();

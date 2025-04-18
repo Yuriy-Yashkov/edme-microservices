@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.model.Currency;
+import ru.edme.dto.CurrencyDto;
 import ru.edme.service.CurrencyAllService;
 import ru.edme.util.TestData;
 
@@ -20,10 +20,10 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        Currency currency = testData.currency;
+        CurrencyDto currencyDto = testData.currencyDto;
         long expected = 1;
 
-        Currency currencySaved = currencyAllService.save(currency);
+        CurrencyDto currencySaved = currencyAllService.save(currencyDto);
         long actual = currencySaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -31,7 +31,7 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        Currency actual = currencyAllService.findById(1L);
+        CurrencyDto actual = currencyAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -44,7 +44,7 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<Currency> currencyes = currencyAllService.findAll();
+        List<CurrencyDto> currencyes = currencyAllService.findAll();
         int actual = currencyes.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -52,11 +52,11 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void updateTest() {
-        Currency actual = currencyAllService.findById(1L);
+        CurrencyDto actual = currencyAllService.findById(1L);
         actual.setCurrencyName("ZZZZZZZZZZZ");
 
         currencyAllService.update(actual);
-        Currency expected = currencyAllService.findById(1L);
+        CurrencyDto expected = currencyAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

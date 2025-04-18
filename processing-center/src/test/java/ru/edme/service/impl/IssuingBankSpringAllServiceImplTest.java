@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.model.IssuingBank;
+import ru.edme.dto.IssuingBankDto;
 import ru.edme.service.IssuingBankAllService;
 import ru.edme.util.TestData;
 
@@ -20,10 +20,10 @@ class IssuingBankSpringAllServiceImplTest extends PostgreSQLContainerInitializer
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        IssuingBank issuingBank = testData.issuingBank;
+        IssuingBankDto issuingBankDto = testData.issuingBankDto;
         long expected = 1;
 
-        IssuingBank issuingBankSaved = issuingBankAllService.save(issuingBank);
+        IssuingBankDto issuingBankSaved = issuingBankAllService.save(issuingBankDto);
         long actual = issuingBankSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -31,7 +31,7 @@ class IssuingBankSpringAllServiceImplTest extends PostgreSQLContainerInitializer
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        IssuingBank actual = issuingBankAllService.findById(1L);
+        IssuingBankDto actual = issuingBankAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -44,7 +44,7 @@ class IssuingBankSpringAllServiceImplTest extends PostgreSQLContainerInitializer
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<IssuingBank> issuingBanks = issuingBankAllService.findAll();
+        List<IssuingBankDto> issuingBanks = issuingBankAllService.findAll();
         int actual = issuingBanks.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -52,11 +52,11 @@ class IssuingBankSpringAllServiceImplTest extends PostgreSQLContainerInitializer
 
     @Test
     void updateTest() {
-        IssuingBank actual = issuingBankAllService.findById(1L);
+        IssuingBankDto actual = issuingBankAllService.findById(1L);
         actual.setAbbreviatedName("ZZZZZZZZZZZ");
 
         issuingBankAllService.update(actual);
-        IssuingBank expected = issuingBankAllService.findById(1L);
+        IssuingBankDto expected = issuingBankAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

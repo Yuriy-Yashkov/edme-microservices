@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.model.Card;
+import ru.edme.dto.CardDto;
 import ru.edme.service.CardAllService;
 import ru.edme.util.TestData;
 
@@ -20,10 +20,10 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        Card card = testData.card;
+        CardDto cardDto = testData.cardDto;
         long expected = 1;
 
-        Card cardSaved = cardAllService.save(card);
+        CardDto cardSaved = cardAllService.save(cardDto);
         long actual = cardSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -31,7 +31,7 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        Card actual = cardAllService.findById(1L);
+        CardDto actual = cardAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -44,7 +44,7 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<Card> cardes = cardAllService.findAll();
+        List<CardDto> cardes = cardAllService.findAll();
         int actual = cardes.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -52,11 +52,11 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void updateTest() {
-        Card actual = cardAllService.findById(1L);
+        CardDto actual = cardAllService.findById(1L);
         actual.setHolderName("ZZZZZZZZZZZ");
 
         cardAllService.update(actual);
-        Card expected = cardAllService.findById(1L);
+        CardDto expected = cardAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }

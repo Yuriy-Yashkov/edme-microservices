@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.edme.model.Account;
+import ru.edme.dto.AccountDto;
 import ru.edme.service.AccountAllService;
 import ru.edme.util.TestData;
 
@@ -36,39 +36,39 @@ class AccountControllerTest {
 
     @Test
     void create() throws Exception {
-        Account account = testData.accountId;
-        String jsonRequest = objectMapper.writeValueAsString(account);
+        AccountDto accountDtoId = testData.accountDtoId;
+        String jsonRequest = objectMapper.writeValueAsString(accountDtoId);
 
-        Mockito.when(accountAllService.save(any(Account.class))).thenReturn(account);
+        Mockito.when(accountAllService.save(any(AccountDto.class))).thenReturn(accountDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/cards/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(account.getId()))
-                .andExpect(jsonPath("$.accountNumber").value(account.getAccountNumber()));
+                .andExpect(jsonPath("$.id").value(accountDtoId.getId()))
+                .andExpect(jsonPath("$.accountNumber").value(accountDtoId.getAccountNumber()));
 
-        Mockito.verify(accountAllService, times(1)).save(any(Account.class));
+        Mockito.verify(accountAllService, times(1)).save(any(AccountDto.class));
     }
 
     @Test
     void findById() throws Exception {
-        Account account = testData.accountId;
-        Long id = account.getId();
+        AccountDto accountDtoId = testData.accountDtoId;
+        Long id = accountDtoId.getId();
 
-        Mockito.when(accountAllService.findById(id)).thenReturn(account);
+        Mockito.when(accountAllService.findById(id)).thenReturn(accountDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/cards/accounts/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(account.getId()))
-                .andExpect(jsonPath("$.accountNumber").value(account.getAccountNumber()));
+                .andExpect(jsonPath("$.id").value(accountDtoId.getId()))
+                .andExpect(jsonPath("$.accountNumber").value(accountDtoId.getAccountNumber()));
 
         Mockito.verify(accountAllService, times(1)).findById(id);
     }
 
     @Test
     void findAll() throws Exception {
-        List<Account> accounts = List.of(testData.accountId, testData.account);
+        List<AccountDto> accounts = List.of(testData.accountDtoId, testData.accountDtoId);
 
         Mockito.when(accountAllService.findAll()).thenReturn(accounts);
 
@@ -81,24 +81,24 @@ class AccountControllerTest {
 
     @Test
     void update() throws Exception {
-        Account updatedAccount = testData.accountId;
-        String jsonRequest = objectMapper.writeValueAsString(updatedAccount);
+        AccountDto accountDtoId = testData.accountDtoId;
+        String jsonRequest = objectMapper.writeValueAsString(accountDtoId);
 
-        Mockito.when(accountAllService.update(any(Account.class))).thenReturn(updatedAccount);
+        Mockito.when(accountAllService.update(any(AccountDto.class))).thenReturn(accountDtoId);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/cards/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isUpgradeRequired())
-                .andExpect(jsonPath("$.id").value(updatedAccount.getId()))
-                .andExpect(jsonPath("$.accountNumber").value(updatedAccount.getAccountNumber()));
+                .andExpect(jsonPath("$.id").value(accountDtoId.getId()))
+                .andExpect(jsonPath("$.accountNumber").value(accountDtoId.getAccountNumber()));
 
-        Mockito.verify(accountAllService, times(1)).update(any(Account.class));
+        Mockito.verify(accountAllService, times(1)).update(any(AccountDto.class));
     }
 
     @Test
     void deleteShouldReturnOk() throws Exception {
-        Long id = testData.accountId.getId();
+        Long id = testData.accountDtoId.getId();
 
         Mockito.when(accountAllService.delete(id)).thenReturn(true);
 
@@ -110,7 +110,7 @@ class AccountControllerTest {
 
     @Test
     void deleteShouldReturnNotFound() throws Exception {
-        Long id = testData.accountId.getId();
+        Long id = testData.accountDtoId.getId();
 
         Mockito.when(accountAllService.delete(id)).thenReturn(false);
 

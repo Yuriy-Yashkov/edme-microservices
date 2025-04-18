@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.PostgreSQLContainerInitializer;
-import ru.edme.model.CardStatus;
+import ru.edme.dto.CardStatusDto;
 import ru.edme.service.CardStatusAllService;
 import ru.edme.util.TestData;
 
@@ -23,10 +23,10 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
-        CardStatus cardStatus = testData.cardStatus;
+        CardStatusDto cardStatusDto = testData.cardStatusDto;
         long expected = 1;
 
-        CardStatus cardStatusSaved = cardStatusAllService.save(cardStatus);
+        CardStatusDto cardStatusSaved = cardStatusAllService.save(cardStatusDto);
         long actual = cardStatusSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
@@ -34,7 +34,7 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
 
     @Test
     void findByIdShouldReturnObjectTest() {
-        CardStatus actual = cardStatusAllService.findById(1L);
+        CardStatusDto actual = cardStatusAllService.findById(1L);
 
         Assertions.assertNotNull(actual);
     }
@@ -47,7 +47,7 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
     @Test
     void findAllShouldReturnListSize() {
         int expected = 1;
-        List<CardStatus> cardStatuses = cardStatusAllService.findAll();
+        List<CardStatusDto> cardStatuses = cardStatusAllService.findAll();
         int actual = cardStatuses.size();
 
         Assertions.assertTrue(expected <= actual);
@@ -55,10 +55,10 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
 
     @Test
     void updateTest() {
-        CardStatus actual = cardStatusAllService.findById(1L);
+        CardStatusDto actual = cardStatusAllService.findById(1L);
         actual.setCardStatusName("ZZZZZZZZZZZ");
         cardStatusAllService.update(actual);
-        CardStatus expected = cardStatusAllService.findById(1L);
+        CardStatusDto expected = cardStatusAllService.findById(1L);
 
         Assertions.assertEquals(expected, actual);
     }
