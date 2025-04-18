@@ -1,5 +1,6 @@
 package ru.edme.dto.requestDto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,12 @@ import java.time.LocalDate;
 public class CardRequestDto {
 
     private long id;
+
+    @Size(max = 50)
     private String cardNumber;
     private LocalDate expirationDate;
+
+    @Size(max = 50)
     private String holderName;
     private PaymentSystemRequestDto paymentSystem;
 }

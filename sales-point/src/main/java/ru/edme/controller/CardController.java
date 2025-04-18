@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import ru.edme.service.CardAllService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/cards")
@@ -40,7 +43,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PostMapping
-    public ResponseEntity<CardResponseDto> create(@RequestBody CardRequestDto cardRequestDTO) {
+    public ResponseEntity<CardResponseDto> create(@Valid @RequestBody CardRequestDto cardRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(cardRequestDTO));
     }
 
@@ -69,7 +72,7 @@ public class CardController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Card.class)))
     @PutMapping
-    public ResponseEntity<CardResponseDto> update(@RequestBody CardRequestDto cardRequestDTO) {
+    public ResponseEntity<CardResponseDto> update(@Valid @RequestBody CardRequestDto cardRequestDTO) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllService.update(cardRequestDTO));
     }
 

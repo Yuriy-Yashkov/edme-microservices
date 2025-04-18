@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,7 @@ import ru.edme.service.IssuingBankAllService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/cards/accounts/issuing-banks")
@@ -36,7 +39,7 @@ public class IssuingBankController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuingBank.class)))
     @PostMapping
-    public ResponseEntity<IssuingBankDto> create(@RequestBody IssuingBankDto entity) {
+    public ResponseEntity<IssuingBankDto> create(@Valid @RequestBody IssuingBankDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(issuingBankAllService.save(entity));
     }
 
@@ -65,7 +68,7 @@ public class IssuingBankController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IssuingBank.class)))
     @PutMapping
-    public ResponseEntity<IssuingBankDto> update(@RequestBody IssuingBankDto entity) {
+    public ResponseEntity<IssuingBankDto> update(@Valid @RequestBody IssuingBankDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(issuingBankAllService.update(entity));
     }
 

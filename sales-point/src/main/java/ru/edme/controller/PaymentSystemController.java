@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import ru.edme.service.PaymentSystemAllService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -40,7 +43,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PostMapping
-    public ResponseEntity<PaymentSystemResponseDto> create(@RequestBody PaymentSystemRequestDto entity) {
+    public ResponseEntity<PaymentSystemResponseDto> create(@Valid @RequestBody PaymentSystemRequestDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentSystemAllService.save(entity));
     }
 
@@ -71,7 +74,7 @@ public class PaymentSystemController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PaymentSystem.class)))
     @PutMapping
-    public ResponseEntity<PaymentSystemResponseDto> update(@RequestBody PaymentSystemRequestDto entity) {
+    public ResponseEntity<PaymentSystemResponseDto> update(@Valid @RequestBody PaymentSystemRequestDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(paymentSystemAllService.update(entity));
     }
 

@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,7 @@ import ru.edme.service.AccountAllService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/cards/accounts")
@@ -36,7 +39,7 @@ public class AccountController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Account.class)))
     @PostMapping
-    public ResponseEntity<AccountDto> create(@RequestBody AccountDto entity) {
+    public ResponseEntity<AccountDto> create(@Valid @RequestBody AccountDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountAllService.save(entity));
     }
 
@@ -65,7 +68,7 @@ public class AccountController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Account.class)))
     @PutMapping
-    public ResponseEntity<AccountDto> update(@RequestBody AccountDto entity) {
+    public ResponseEntity<AccountDto> update(@Valid @RequestBody AccountDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(accountAllService.update(entity));
     }
 
