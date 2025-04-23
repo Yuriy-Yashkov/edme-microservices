@@ -76,10 +76,10 @@ public class PaymentSystemController {
     @ApiResponse(responseCode = "200", description = "Платёжная система успешно удалена")
     @ApiResponse(responseCode = "404", description = "Платёжная система не найдена")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID платежной системы", example = "1")
+    public ResponseEntity<Boolean> delete(@Parameter(description = "ID платежной системы", example = "1")
                                        @PathVariable("id") Long id) {
         boolean delete = paymentSystemAllServiceImpl.delete(id);
 
-        return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 }

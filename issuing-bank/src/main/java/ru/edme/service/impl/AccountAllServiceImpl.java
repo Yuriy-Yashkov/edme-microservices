@@ -1,12 +1,14 @@
 package ru.edme.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.edme.dto.AccountDto;
 import ru.edme.exception.EntityNotFoundException;
 import ru.edme.mapper.AccountMapper;
 import ru.edme.model.Account;
-import ru.edme.model.Transaction;
 import ru.edme.repository.AccountRepository;
 import ru.edme.service.AllService;
 
@@ -18,9 +20,10 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-    private final Class<Transaction> entityClass = Transaction.class;
+    private final Class<Account> entityClass = Account.class;
 
     @Override
+    @CachePut(value = "account", key = "#result.id")
     public AccountDto save(AccountDto entity) {
         Account saved = accountRepository.save(accountMapper.toAccount(entity));
 
@@ -28,6 +31,7 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
     }
 
     @Override
+    @Cacheable(value = "account", key = "#id")
     public AccountDto findById(Long id) {
         return accountRepository.findById(id)
                 .map(accountMapper::toAccountDto)
@@ -38,6 +42,7 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
     }
 
     @Override
+    @Cacheable(value = "accounts", key = "'all'")
     public List<AccountDto> findAll() {
         return accountRepository.findAll().stream()
                 .map(accountMapper::toAccountDto)
@@ -45,6 +50,7 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
     }
 
     @Override
+    @CachePut(value = "account", key = "#result.id")
     public AccountDto update(AccountDto entity) {
         AccountDto accountDto = findById(entity.getId());
         accountDto.setAccountNumber(entity.getAccountNumber());
@@ -60,6 +66,7 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
     }
 
     @Override
+    @CacheEvict(value = "account", key = "#id")
     public boolean delete(Long id) {
         AccountDto accountDto = findById(id);
         accountRepository.delete(accountMapper.toAccount(accountDto));

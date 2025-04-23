@@ -39,7 +39,7 @@ public class Client {
     @NotBlank
     @Size(max = 100)
     private String middleName;
-    private LocalDate birth_date;
+    private LocalDate birthDate;
 
     @Size(max = 255)
     private String document;

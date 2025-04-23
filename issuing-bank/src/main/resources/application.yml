@@ -34,4 +34,4 @@ spring:
     redis:
       port: 6380
       host: localhost
-      lifetime: 10m
+      lifetime: 5m

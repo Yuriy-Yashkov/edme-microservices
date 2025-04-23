@@ -76,10 +76,10 @@ public class TransactionTypeController {
     @ApiResponse(responseCode = "200", description = "Тип транзакции успешно удалён")
     @ApiResponse(responseCode = "404", description = "Тип транзакции не найден")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID типа транзакции", example = "1")
+    public ResponseEntity<Boolean> delete(@Parameter(description = "ID типа транзакции", example = "1")
                                        @PathVariable("id") Long id) {
         boolean delete = transactionTypeAllServiceImpl.delete(id);
 
-        return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 }

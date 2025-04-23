@@ -28,7 +28,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/issuing-bank/clients/accounts")
+@RequestMapping("/v1/issuing-bank/accounts")
 @Tag(name = "Account Controller", description = "Управление счетами (Account)")
 public class AccountController {
 
@@ -76,10 +76,10 @@ public class AccountController {
     @ApiResponse(responseCode = "200", description = "Аккаунт успешно удалён")
     @ApiResponse(responseCode = "404", description = "Аккаунт не найден")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID аккаунта", example = "1")
+    public ResponseEntity<Boolean> delete(@Parameter(description = "ID аккаунта", example = "1")
                                        @PathVariable("id") Long id) {
         boolean delete = accountAllServiceImpl.delete(id);
 
-        return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 }

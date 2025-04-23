@@ -76,10 +76,10 @@ public class CurrencyController {
     @ApiResponse(responseCode = "200", description = "Валюта успешно удалён")
     @ApiResponse(responseCode = "404", description = "Валюта не найден")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID валюты", example = "1")
+    public ResponseEntity<Boolean> delete(@Parameter(description = "ID валюты", example = "1")
                                        @PathVariable("id") Long id) {
         boolean delete = currencyAllServiceImpl.delete(id);
 
-        return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 }

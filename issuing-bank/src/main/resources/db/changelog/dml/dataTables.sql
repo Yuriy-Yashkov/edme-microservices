@@ -1,4 +1,4 @@
-INSERT INTO bank_setting (bank_setting, current_value, description)
+INSERT INTO bank_setting (setting, current_value, description)
 VALUES ('license', 'Генеральная лицензия Банка России на осуществление банковских операций №____ от _______ г.',
         'Лицензия'),
        ('full_name', 'Публичное акционерное общество «Банк-эмитент номер один»', 'Полное наименование банка'),

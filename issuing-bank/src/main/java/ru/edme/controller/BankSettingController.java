@@ -76,10 +76,10 @@ public class BankSettingController {
     @ApiResponse(responseCode = "200", description = "Настройка успешно удалён")
     @ApiResponse(responseCode = "404", description = "Настройка не найден")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID настройки", example = "1")
+    public ResponseEntity<Boolean> delete(@Parameter(description = "ID настройки", example = "1")
                                        @PathVariable("id") Long id) {
         boolean delete = bankSettingAllServiceImpl.delete(id);
 
-        return delete ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }
 }

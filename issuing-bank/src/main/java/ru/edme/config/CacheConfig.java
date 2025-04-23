@@ -39,6 +39,7 @@ public class CacheConfig {
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType("ru.edme")
                 .allowIfSubType("java.util")
+                .allowIfSubType("java.math")
                 .build();
 
         mapper.activateDefaultTyping(
