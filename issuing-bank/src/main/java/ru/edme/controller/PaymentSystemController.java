@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.edme.dto.PaymentSystemDto;
-import ru.edme.model.Account;
 import ru.edme.service.AllService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class PaymentSystemController {
     @Operation(summary = "Создать новую платежную систему", description = "Создаёт новый платежную систему и возвращает её данные")
     @ApiResponse(responseCode = "201", description = "Платежная система успешно создана",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = PaymentSystemDto.class)))
     @PostMapping
     public ResponseEntity<PaymentSystemDto> create(@Valid @RequestBody PaymentSystemDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentSystemAllServiceImpl.save(entity));
@@ -46,7 +45,7 @@ public class PaymentSystemController {
     @Operation(summary = "Получить платежную систему по ID", description = "Возвращает платежную систему по его уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Платежная система найден",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = PaymentSystemDto.class)))
     @ApiResponse(responseCode = "404", description = "Платежная система не найден")
     @GetMapping("/{id}")
     public ResponseEntity<PaymentSystemDto> findById(@Parameter(description = "ID платежной системы", example = "1")
@@ -57,7 +56,7 @@ public class PaymentSystemController {
     @Operation(summary = "Получить список всех платежных систем", description = "Возвращает все платёжные системы из базы данных")
     @ApiResponse(responseCode = "200", description = "Список платежных систем",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = PaymentSystemDto.class)))
     @GetMapping
     public ResponseEntity<List<PaymentSystemDto>> findAll() {
         return ResponseEntity.ok(paymentSystemAllServiceImpl.findAll());
@@ -66,7 +65,7 @@ public class PaymentSystemController {
     @Operation(summary = "Обновить данные платежной системы", description = "Обновляет существующую платежную систему")
     @ApiResponse(responseCode = "426", description = "Обновление требует дополнительных действий",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = PaymentSystemDto.class)))
     @PutMapping
     public ResponseEntity<PaymentSystemDto> update(@Valid @RequestBody PaymentSystemDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(paymentSystemAllServiceImpl.update(entity));
@@ -77,7 +76,7 @@ public class PaymentSystemController {
     @ApiResponse(responseCode = "404", description = "Платёжная система не найдена")
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@Parameter(description = "ID платежной системы", example = "1")
-                                       @PathVariable("id") Long id) {
+                                          @PathVariable("id") Long id) {
         boolean delete = paymentSystemAllServiceImpl.delete(id);
 
         return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();

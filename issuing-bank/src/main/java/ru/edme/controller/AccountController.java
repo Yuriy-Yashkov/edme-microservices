@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.edme.dto.AccountDto;
-import ru.edme.model.Account;
 import ru.edme.service.AllService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class AccountController {
     @Operation(summary = "Создать новый аккаунт", description = "Создаёт новый аккаунт и возвращает его данные")
     @ApiResponse(responseCode = "201", description = "Аккаунт успешно создан",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = AccountDto.class)))
     @PostMapping
     public ResponseEntity<AccountDto> create(@Valid @RequestBody AccountDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountAllServiceImpl.save(entity));
@@ -46,7 +45,7 @@ public class AccountController {
     @Operation(summary = "Получить аккаунт по ID", description = "Возвращает аккаунт по его уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Аккаунт найден",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = AccountDto.class)))
     @ApiResponse(responseCode = "404", description = "Аккаунт не найден")
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> findById(@Parameter(description = "ID аккаунта", example = "1")
@@ -57,7 +56,7 @@ public class AccountController {
     @Operation(summary = "Получить список всех аккаунтов", description = "Возвращает все аккаунты из базы данных")
     @ApiResponse(responseCode = "200", description = "Список аккаунтов",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = AccountDto.class)))
     @GetMapping
     public ResponseEntity<List<AccountDto>> findAll() {
         return ResponseEntity.ok(accountAllServiceImpl.findAll());
@@ -66,7 +65,7 @@ public class AccountController {
     @Operation(summary = "Обновить данные аккаунта", description = "Обновляет существующий аккаунт")
     @ApiResponse(responseCode = "426", description = "Обновление требует дополнительных действий",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = AccountDto.class)))
     @PutMapping
     public ResponseEntity<AccountDto> update(@Valid @RequestBody AccountDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(accountAllServiceImpl.update(entity));
@@ -77,7 +76,7 @@ public class AccountController {
     @ApiResponse(responseCode = "404", description = "Аккаунт не найден")
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@Parameter(description = "ID аккаунта", example = "1")
-                                       @PathVariable("id") Long id) {
+                                          @PathVariable("id") Long id) {
         boolean delete = accountAllServiceImpl.delete(id);
 
         return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();

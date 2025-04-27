@@ -23,7 +23,7 @@ import java.util.List;
 public class CardAllServiceImpl implements AllService<CardDto, Long> {
 
     private final CardRepository cardRepository;
-    private  final CardStatusMapper cardStatusMapper;
+    private final CardStatusMapper cardStatusMapper;
     private final PaymentSystemMapper paymentSystemMapper;
     private final AccountMapper accountMapper;
     private final CardMapper cardMapper;

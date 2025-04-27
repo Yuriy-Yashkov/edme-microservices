@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.edme.dto.ClientDto;
-import ru.edme.model.Account;
 import ru.edme.service.AllService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class ClientController {
     @Operation(summary = "Создать нового клиента", description = "Создаёт нового клиента и возвращает его данные")
     @ApiResponse(responseCode = "201", description = "Клиент успешно создан",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = ClientDto.class)))
     @PostMapping
     public ResponseEntity<ClientDto> create(@Valid @RequestBody ClientDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientAllServiceImpl.save(entity));
@@ -46,7 +45,7 @@ public class ClientController {
     @Operation(summary = "Получить клиента по ID", description = "Возвращает клиента по его уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Клиент найден",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = ClientDto.class)))
     @ApiResponse(responseCode = "404", description = "Клиент не найден")
     @GetMapping("/{id}")
     public ResponseEntity<ClientDto> findById(@Parameter(description = "ID клиента", example = "1")
@@ -57,7 +56,7 @@ public class ClientController {
     @Operation(summary = "Получить список всех клиентов", description = "Возвращает всех клиентов из базы данных")
     @ApiResponse(responseCode = "200", description = "Список клиентов",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = ClientDto.class)))
     @GetMapping
     public ResponseEntity<List<ClientDto>> findAll() {
         return ResponseEntity.ok(clientAllServiceImpl.findAll());
@@ -66,7 +65,7 @@ public class ClientController {
     @Operation(summary = "Обновить данные клиента", description = "Обновляет существующего клиента")
     @ApiResponse(responseCode = "426", description = "Обновление требует дополнительных действий",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = ClientDto.class)))
     @PutMapping
     public ResponseEntity<ClientDto> update(@Valid @RequestBody ClientDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(clientAllServiceImpl.update(entity));
@@ -77,7 +76,7 @@ public class ClientController {
     @ApiResponse(responseCode = "404", description = "Клиент не найден")
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@Parameter(description = "ID клиента", example = "1")
-                                       @PathVariable("id") Long id) {
+                                          @PathVariable("id") Long id) {
         boolean delete = clientAllServiceImpl.delete(id);
 
         return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();

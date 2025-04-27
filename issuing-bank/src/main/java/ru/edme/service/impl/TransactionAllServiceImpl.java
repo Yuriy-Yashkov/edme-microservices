@@ -2,7 +2,9 @@ package ru.edme.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.edme.dto.AccountDto;
 import ru.edme.dto.TransactionDto;
+import ru.edme.dto.TransactionTypeDto;
 import ru.edme.exception.EntityNotFoundException;
 import ru.edme.mapper.TransactionMapper;
 import ru.edme.model.Transaction;
@@ -17,10 +19,18 @@ public class TransactionAllServiceImpl implements AllService<TransactionDto, Lon
 
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
+    private final AllService<AccountDto, Long> accountAllServiceImpl;
+    private final AllService<TransactionTypeDto, Long> transactionTypeAllServiceImpl;
     private final Class<Transaction> entityClass = Transaction.class;
 
     @Override
     public TransactionDto save(TransactionDto entity) {
+        AccountDto accountDto = accountAllServiceImpl.findById(entity.getAccount().getId());
+        TransactionTypeDto transactionTypeDto = transactionTypeAllServiceImpl.findById(entity.getTransactionType().getId());
+
+        entity.setAccount(accountDto);
+        entity.setTransactionType(transactionTypeDto);
+
         Transaction saved = transactionRepository.save(transactionMapper.toTransaction(entity));
 
         return transactionMapper.toTransactionDto(saved);

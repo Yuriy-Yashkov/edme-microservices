@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.edme.dto.CardDto;
-import ru.edme.model.Account;
 import ru.edme.service.AllService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class CardController {
     @Operation(summary = "Создать новую карту", description = "Создаёт новую карту и возвращает её данные")
     @ApiResponse(responseCode = "201", description = "Карта успешно создана",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = CardDto.class)))
     @PostMapping
     public ResponseEntity<CardDto> create(@Valid @RequestBody CardDto entity) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardAllServiceImpl.save(entity));
@@ -46,7 +45,7 @@ public class CardController {
     @Operation(summary = "Получить карту по ID", description = "Возвращает карту по её уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Карта найдена",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = CardDto.class)))
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @GetMapping("/{id}")
     public ResponseEntity<CardDto> findById(@Parameter(description = "ID карты", example = "1")
@@ -57,7 +56,7 @@ public class CardController {
     @Operation(summary = "Получить список всех карт", description = "Возвращает все карты из базы данных")
     @ApiResponse(responseCode = "200", description = "Список карт",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = CardDto.class)))
     @GetMapping
     public ResponseEntity<List<CardDto>> findAll() {
         return ResponseEntity.ok(cardAllServiceImpl.findAll());
@@ -66,7 +65,7 @@ public class CardController {
     @Operation(summary = "Обновить данные карты", description = "Обновляет существующую карту")
     @ApiResponse(responseCode = "426", description = "Обновление требует дополнительных действий",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Account.class)))
+                    schema = @Schema(implementation = CardDto.class)))
     @PutMapping
     public ResponseEntity<CardDto> update(@Valid @RequestBody CardDto entity) {
         return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(cardAllServiceImpl.update(entity));
@@ -77,7 +76,7 @@ public class CardController {
     @ApiResponse(responseCode = "404", description = "Карта не найдена")
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@Parameter(description = "ID карты", example = "1")
-                                       @PathVariable("id") Long id) {
+                                          @PathVariable("id") Long id) {
         boolean delete = cardAllServiceImpl.delete(id);
 
         return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
