@@ -1,5 +1,6 @@
 rootProject.name = 'edme-microservices'
-include 'sales-point'
-include 'processing-center'
-include 'issuing-bank'
+includeBuild 'sales-point'
+includeBuild 'processing-center'
+includeBuild 'issuing-bank'
+includeBuild 'eureka-server'
 

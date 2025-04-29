@@ -1,0 +1,26 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: eureka-server
+#  config:
+#    import: configserver:http://localhost:8888
+
+eureka:
+  client: # это не клиент, поэтому отключаем
+    register-with-eureka: false # этот сервер не будет регистрировать самого себя в Eureka
+    fetch-registry: false # Запрещает загрузку реестра других сервисов, потому что сервер сам хранит этот реестр, а не использует его.
+    service-url:
+      defaultZone: http://localhost:8001/eureka/  # <-- Явно указать на самого себя или будет по умолчанию 8761
+      # URL, по которому Eureka Client будет обращаться к Eureka Server.
+
+logging:
+  level:
+    root: INFO
+    com:
+      netflix:
+        eureka: off
+        discovery: off
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"

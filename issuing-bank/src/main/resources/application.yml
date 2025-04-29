@@ -8,6 +8,8 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
 
 spring:
+  application:
+    name: issuing-bank
   datasource:
     url: jdbc:postgresql://localhost:5434/postgres
     username: postgres
@@ -35,3 +37,9 @@ spring:
       port: 6380
       host: localhost
       lifetime: 5m
+server:
+  port: 8083
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8001/eureka/  # URL, по которому Eureka Client будет обращаться к Eureka Server.
