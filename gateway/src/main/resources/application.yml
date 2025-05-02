@@ -1,0 +1,48 @@
+server:
+  port: 8765
+
+spring:
+  application:
+    name: gateway
+  #  config:
+  #    import: configserver:http://localhost:8888
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true       # Включаем автоматическое создание маршрутов по именам
+          lower-case-service-id: true  # Преобразует ID сервисов в нижний регистр
+      routes:
+
+        # Маршрут для ISSUING-BANK
+        - id: issuing-bank-route
+          uri: lb://issuing-bank
+          predicates:
+            - Path=/v1/issuing-bank/**
+
+        # Маршрут для SALES-POINT
+        - id: sales-point-route
+          uri: lb://sales-point
+          predicates:
+            - Path=/v1/sales-point/**
+
+        # Маршрут для PROCESSING-CENTER
+        - id: processing-center-route
+          uri: lb://processing-center
+          predicates:
+            - Path=/v1/processing-center/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8001/eureka/ # URL, по которому Eureka Client будет обращаться к Eureka Server.
+
+logging:
+  level:
+    root: INFO
+    com:
+      netflix:
+        eureka: info
+        discovery: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"

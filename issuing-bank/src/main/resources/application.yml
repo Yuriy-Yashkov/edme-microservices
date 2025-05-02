@@ -36,7 +36,7 @@ spring:
     redis:
       port: 6380
       host: localhost
-      lifetime: 5m
+      lifetime: 1m
 server:
   port: 8083
 eureka:

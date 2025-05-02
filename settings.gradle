@@ -3,4 +3,5 @@ includeBuild 'sales-point'
 includeBuild 'processing-center'
 includeBuild 'issuing-bank'
 includeBuild 'eureka-server'
+includeBuild 'gateway'
 

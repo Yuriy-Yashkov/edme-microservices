@@ -5,6 +5,9 @@ logging:
       springframework: INFO
       springframework.security: DEBUG
       springframework.data.redis.cache: DEBUG
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.netflix.discovery.InstanceInfoReplicator: OFF
+    com.netflix.discovery.shared.transport.decorator: OFF
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
 
