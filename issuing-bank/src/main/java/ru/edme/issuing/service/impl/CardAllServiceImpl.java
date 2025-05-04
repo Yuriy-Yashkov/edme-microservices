@@ -50,7 +50,6 @@ public class CardAllServiceImpl implements CardService {
     }
 
     @Override
-//    @Cacheable(value = "cards", key = "'all'")
     public List<CardDto> findAll() {
         return cardRepository.findAll().stream()
                 .map(cardMapper::toCardDto)

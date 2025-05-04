@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.edme.issuing.dto.AccountDto;
-import ru.edme.issuing.service.AllService;
+import ru.edme.issuing.service.AccountService;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
 @Tag(name = "Account Controller", description = "Управление счетами (Account)")
 public class AccountController {
 
-    private final AllService<AccountDto, Long> accountAllServiceImpl;
+    private final AccountService accountService;
 
     @Operation(summary = "Создать новый аккаунт", description = "Создаёт новый аккаунт и возвращает его данные")
     @ApiResponse(responseCode = "201", description = "Аккаунт успешно создан",
@@ -39,7 +39,7 @@ public class AccountController {
                     schema = @Schema(implementation = AccountDto.class)))
     @PostMapping
     public ResponseEntity<AccountDto> create(@Valid @RequestBody AccountDto entity) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountAllServiceImpl.save(entity));
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(entity));
     }
 
     @Operation(summary = "Получить аккаунт по ID", description = "Возвращает аккаунт по его уникальному идентификатору")
@@ -50,7 +50,7 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> findById(@Parameter(description = "ID аккаунта", example = "1")
                                                @PathVariable("id") Long id) {
-        return ResponseEntity.ok(accountAllServiceImpl.findById(id));
+        return ResponseEntity.ok(accountService.findById(id));
     }
 
     @Operation(summary = "Получить список всех аккаунтов", description = "Возвращает все аккаунты из базы данных")
@@ -59,7 +59,7 @@ public class AccountController {
                     schema = @Schema(implementation = AccountDto.class)))
     @GetMapping
     public ResponseEntity<List<AccountDto>> findAll() {
-        return ResponseEntity.ok(accountAllServiceImpl.findAll());
+        return ResponseEntity.ok(accountService.findAllWrapped().getValues());
     }
 
     @Operation(summary = "Обновить данные аккаунта", description = "Обновляет существующий аккаунт")
@@ -68,7 +68,7 @@ public class AccountController {
                     schema = @Schema(implementation = AccountDto.class)))
     @PutMapping
     public ResponseEntity<AccountDto> update(@Valid @RequestBody AccountDto entity) {
-        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(accountAllServiceImpl.update(entity));
+        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(accountService.update(entity));
     }
 
     @Operation(summary = "Удалить аккаунт", description = "Удаляет аккаунт по его ID")
@@ -77,7 +77,7 @@ public class AccountController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@Parameter(description = "ID аккаунта", example = "1")
                                           @PathVariable("id") Long id) {
-        boolean delete = accountAllServiceImpl.delete(id);
+        boolean delete = accountService.delete(id);
 
         return delete ? ResponseEntity.ok(true) : ResponseEntity.notFound().build();
     }

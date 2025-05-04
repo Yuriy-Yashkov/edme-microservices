@@ -1,45 +1,5 @@
-logging:
-  level:
-    root: INFO
-    org:
-      springframework: INFO
-      springframework.data.redis.cache: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
-
 spring:
   application:
     name: issuing-bank
-  datasource:
-    url: jdbc:postgresql://localhost:5434/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        physical_naming_strategy=org:
-          hibernate:
-            boot:
-              model:
-                naming:
-                  CamelCaseToUnderscoresNamingStrategy:
-  liquibase:
-    change-log: classpath:/db/changelog/master.yaml
-    enabled: true
-
-  cache:
-    type: redis
-  data:
-    redis:
-      port: 6380
-      host: localhost
-      lifetime: 1m
-server:
-  port: 8083
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8001/eureka/  # URL, по которому Eureka Client будет обращаться к Eureka Server.
+  config:
+    import: configserver:http://localhost:8888

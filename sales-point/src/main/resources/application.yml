@@ -1,53 +1,5 @@
-logging:
-  level:
-    root: INFO
-    org:
-      springframework: INFO
-      springframework.security: DEBUG
-      springframework.data.redis.cache: DEBUG
-    com.netflix.discovery.DiscoveryClient: OFF
-    com.netflix.discovery.InstanceInfoReplicator: OFF
-    com.netflix.discovery.shared.transport.decorator: OFF
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
-
 spring:
   application:
     name: sales-point
-  datasource:
-    url: jdbc:postgresql://localhost:5433/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        physical_naming_strategy=org:
-          hibernate:
-            boot:
-              model:
-                naming:
-                  CamelCaseToUnderscoresNamingStrategy:
-  liquibase:
-    change-log: classpath:/db/changelog/master.yaml
-    enabled: true
-
-  cache:
-    type: redis
-  data:
-    redis:
-      port: 6379
-      host: localhost
-      lifetime: 10m
-
-token:
-  key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
-  lifetime: 60m
-server:
-  port: 8082
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8001/eureka/  # URL, по которому Eureka Client будет обращаться к Eureka Server.
+  config:
+    import: configserver:http://localhost:8888

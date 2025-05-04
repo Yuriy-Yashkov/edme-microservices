@@ -1,0 +1,19 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Yuriy-Yashkov/edme-config.git
+          clone-on-start: true
+          basedir: file://c:/Users/71764/Documents/GitHub/edme-microservices-config
+          default-label: master
+          search-paths: config
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"

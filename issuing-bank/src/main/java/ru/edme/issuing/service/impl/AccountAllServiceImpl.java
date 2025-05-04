@@ -10,13 +10,14 @@ import ru.edme.issuing.exception.EntityNotFoundException;
 import ru.edme.issuing.mapper.AccountMapper;
 import ru.edme.issuing.model.Account;
 import ru.edme.issuing.repository.AccountRepository;
-import ru.edme.issuing.service.AllService;
+import ru.edme.issuing.service.AccountService;
+import ru.edme.issuing.util.ListWrapper;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
+public class AccountAllServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
@@ -42,11 +43,18 @@ public class AccountAllServiceImpl implements AllService<AccountDto, Long> {
     }
 
     @Override
-    @Cacheable(value = "accounts", key = "'all'")
     public List<AccountDto> findAll() {
         return accountRepository.findAll().stream()
                 .map(accountMapper::toAccountDto)
                 .toList();
+    }
+
+    @Override
+    @Cacheable(value = "accounts", key = "'all'")
+    public ListWrapper<AccountDto> findAllWrapped() {
+        List<AccountDto> list = findAll();
+
+        return new ListWrapper<>(list);
     }
 
     @Override

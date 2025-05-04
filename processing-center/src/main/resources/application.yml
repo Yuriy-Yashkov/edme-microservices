@@ -1,36 +1,5 @@
 spring:
   application:
     name: processing-center
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        physical_naming_strategy=org:
-          hibernate:
-            boot:
-              model:
-                naming:
-                  CamelCaseToUnderscoresNamingStrategy:
-  liquibase:
-    change-log: classpath:/db/changelog/master.yaml
-    enabled: true
-server:
-  port: 8081
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8001/eureka/  # URL, по которому Eureka Client будет обращаться к Eureka Server.
-logging:
-  level:
-    root: INFO
-    org:
-      springframework: INFO
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"
+  config:
+    import: configserver:http://localhost:8888
