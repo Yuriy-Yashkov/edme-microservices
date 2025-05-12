@@ -16,6 +16,16 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable:
+          idempotence: true
+        max:
+          in:
+            flight:
+              requests:
+                per:
+                  connection: 5
+      retries: 10
     topics:
       card-transfer-to-issuing: card-created-to-issuing-events-topic
       card-transfer-to-processing: card-created-to-processing-events-topic
