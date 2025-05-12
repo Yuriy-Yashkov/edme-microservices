@@ -38,12 +38,12 @@ public class CardAllServiceImpl implements CardService {
     @Override
     @Transactional
     @CachePut(value = "card", key = "#result.id")
-    public CardDto save(CardDto entity) {
+    public CardDto save(CardDto cardDto) {
         LocalDateTime dateTime = LocalDateTime.now();
-        entity.setSentToProcessingCenter(dateTime);
+        cardDto.setSentToProcessingCenter(dateTime);
 
-        Card saved = cardRepository.save(cardMapper.toCard(entity));
-        cardProducerService.sendCard(entity, dateTime);
+        cardProducerService.sendCard(cardDto, dateTime);
+        Card saved = cardRepository.save(cardMapper.toCard(cardDto));
 
         return cardMapper.toCardDto(saved);
     }

@@ -1,4 +1,4 @@
-package ru.edme.issuing.config;
+package ru.edme.processing.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 public class KafkaConfig {
 
-    @Value("${spring.kafka.topics.card-transfer-to-processing}")
+    @Value("${spring.kafka.topics.card-transfer-to-issuing}")
     private String topic;
 
     @Bean

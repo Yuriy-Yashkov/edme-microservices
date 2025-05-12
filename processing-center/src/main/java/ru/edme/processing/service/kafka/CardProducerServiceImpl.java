@@ -1,4 +1,4 @@
-package ru.edme.issuing.service.kafka;
+package ru.edme.processing.service.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import ru.edme.dto.CardTransferDto;
-import ru.edme.issuing.dto.CardDto;
+import ru.edme.processing.dto.CardDto;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +23,7 @@ public class CardProducerServiceImpl implements CardProducerService {
     @Value("${spring.kafka.topics.key}")
     private String key;
 
-    @Value("${spring.kafka.topics.card-transfer-to-processing}")
+    @Value("${spring.kafka.topics.card-transfer-to-issuing}")
     private String topic;
 
     @Override // Асинхронный режим
@@ -50,8 +50,8 @@ public class CardProducerServiceImpl implements CardProducerService {
                 cardDto.getCardStatus().getId(),
                 cardDto.getPaymentSystem().getId(),
                 cardDto.getAccount().getId(),
-                dateTime,
-                null
+                null,
+                dateTime
         );
     }
 }

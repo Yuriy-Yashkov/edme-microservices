@@ -5,7 +5,7 @@ spring:
     import: configserver:http://localhost:8888
 
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: card-consumer-group
       auto-offset-reset: earliest
@@ -13,9 +13,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-#    producer:
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topics:
+      card-transfer-to-issuing: card-created-to-issuing-events-topic
+      card-transfer-to-processing: card-created-to-processing-events-topic
+      key: 1
 logging:
   level:
     root: INFO

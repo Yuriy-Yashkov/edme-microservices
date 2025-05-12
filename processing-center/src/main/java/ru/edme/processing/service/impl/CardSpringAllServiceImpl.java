@@ -25,8 +25,10 @@ import ru.edme.processing.repository.CurrencyRepository;
 import ru.edme.processing.repository.IssuingBankRepository;
 import ru.edme.processing.repository.PaymentSystemRepository;
 import ru.edme.processing.service.CardAllService;
+import ru.edme.processing.service.kafka.CardProducerService;
 import ru.edme.processing.util.MoonAlgorithm;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -47,34 +49,40 @@ public class CardSpringAllServiceImpl implements CardAllService {
     private final AccountMapper accountMapper;
     private final CurrencyMapper currencyMapper;
     private final IssuingBankMapper issuingBankMapper;
+    private final CardProducerService cardProducerService;
 
     @Override
     @Transactional
-    public CardDto save(CardDto entity) {
-        if (!MoonAlgorithm.isValidMoon(entity.getCardNumber())) {
+    public CardDto save(CardDto cardDto) {
+        LocalDateTime dateTime = LocalDateTime.now();
+        cardDto.setSentToIssuingBank(dateTime);
+
+        if (!MoonAlgorithm.isValidMoon(cardDto.getCardNumber())) {
             log.warn("Некорректный номер карты!");
             return CardDto.builder().build();
         }
         // Сохраняем вложенные объекты
-        CardStatus cardStatus = cardStatusRepository.save(cardStatusMapper.toCardStatus(entity.getCardStatus()));
-        PaymentSystem paymentSystem = paymentSystemRepository.save(paymentSystemMapper.toPaymentSystem(entity.getPaymentSystem()));
+        CardStatus cardStatus = cardStatusRepository.save(cardStatusMapper.toCardStatus(cardDto.getCardStatus()));
+        PaymentSystem paymentSystem = paymentSystemRepository.save(paymentSystemMapper.toPaymentSystem(cardDto.getPaymentSystem()));
 
         // Сохраняем вложенные объекты в другие вложенные объекты
-        Currency currency = currencyRepository.save(currencyMapper.toCurrency(entity.getAccount().getCurrency()));
-        IssuingBank issuingBank = issuingBankRepository.save(issuingBankMapper.toIssuingBank(entity.getAccount().getIssuingBank()));
+        Currency currency = currencyRepository.save(currencyMapper.toCurrency(cardDto.getAccount().getCurrency()));
+        IssuingBank issuingBank = issuingBankRepository.save(issuingBankMapper.toIssuingBank(cardDto.getAccount().getIssuingBank()));
 
-        AccountDto accountDto = entity.getAccount();
+        AccountDto accountDto = cardDto.getAccount();
         accountDto.setIssuingBank(issuingBankMapper.toIssuingBankDto(issuingBank));
         accountDto.setCurrency(currencyMapper.toCurrencyDto(currency));
         Account accountNew = accountRepository.save(accountMapper.toAccount(accountDto));
 
         // Ложем во входящую dto реальные объекты, возвращённые из БД.
-        entity.setAccount(accountMapper.toAccountDto(accountNew));
-        entity.setCardStatus(cardStatusMapper.toCardStatusDto(cardStatus));
-        entity.setPaymentSystem(paymentSystemMapper.toPaymentSystemDto(paymentSystem));
+        cardDto.setAccount(accountMapper.toAccountDto(accountNew));
+        cardDto.setCardStatus(cardStatusMapper.toCardStatusDto(cardStatus));
+        cardDto.setPaymentSystem(paymentSystemMapper.toPaymentSystemDto(paymentSystem));
 
-        Card card = cardMapper.toCard(entity);
+        Card card = cardMapper.toCard(cardDto);
         Card saved = cardRepository.save(card);
+
+        cardProducerService.sendCard(cardDto, dateTime);
 
         return cardMapper.toCardDto(saved);
     }
