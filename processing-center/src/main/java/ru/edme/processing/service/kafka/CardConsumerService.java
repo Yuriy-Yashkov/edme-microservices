@@ -10,6 +10,7 @@ import ru.edme.processing.dto.AccountDto;
 import ru.edme.processing.dto.CardDto;
 import ru.edme.processing.dto.CardStatusDto;
 import ru.edme.processing.dto.PaymentSystemDto;
+import ru.edme.processing.feignClient.SalesPointClient;
 import ru.edme.processing.mapper.CardMapper;
 import ru.edme.processing.model.Card;
 import ru.edme.processing.repository.CardRepository;
@@ -28,23 +29,24 @@ public class CardConsumerService {
     private final CardStatusAllService cardStatusAllService;
     private final PaymentSystemAllService paymentSystemAllService;
     private final AccountAllService accountAllService;
+    private final SalesPointClient salesPointClient;
     private final CardMapper cardMapper;
 
     @Transactional
     @KafkaListener(topics = "#{@environment.getProperty('spring.kafka.topics.card-transfer-to-processing')}",
             groupId = "card-issuing-consumer-group")
-    public void listen(CardTransferDto dto) {
-        log.info("Получена карточка из Kafka: {}", dto);
+    public void listen(CardTransferDto cardTransferDto) {
+        log.info("Получена карточка из Kafka: {}", cardTransferDto);
 
-        CardStatusDto cardStatusDto = cardStatusAllService.findById(dto.getCardStatusId());
-        PaymentSystemDto paymentSystemDto = paymentSystemAllService.findById(dto.getPaymentSystemId());
-        AccountDto accountDto = accountAllService.findById(dto.getAccountId());
+        CardStatusDto cardStatusDto = cardStatusAllService.findById(cardTransferDto.getCardStatusId());
+        PaymentSystemDto paymentSystemDto = paymentSystemAllService.findById(cardTransferDto.getPaymentSystemId());
+        AccountDto accountDto = accountAllService.findById(cardTransferDto.getAccountId());
 
         CardDto card = new CardDto(
                 0,
-                dto.getCardNumber(),
-                dto.getExpirationDate(),
-                dto.getHolderName(),
+                cardTransferDto.getCardNumber(),
+                cardTransferDto.getExpirationDate(),
+                cardTransferDto.getHolderName(),
                 cardStatusDto,
                 paymentSystemDto,
                 accountDto,
@@ -52,6 +54,9 @@ public class CardConsumerService {
                 null
         );
         Card saved = cardRepository.save(cardMapper.toCard(card));
+
+        salesPointClient.transferToSalesPoint(cardTransferDto);
         log.info("Карточка из Kafka сохранена в БД: {}", saved);
+        log.info("Передана в Sales-Point");
     }
 }

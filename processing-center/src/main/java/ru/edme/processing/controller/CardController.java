@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.edme.dto.CardTransferDto;
 import ru.edme.processing.dto.CardDto;
 import ru.edme.processing.model.Card;
 import ru.edme.processing.service.CardAllService;
+import ru.edme.processing.service.CardTransferService;
 
 import java.util.List;
 
@@ -33,6 +35,20 @@ import java.util.List;
 public class CardController {
 
     private final CardAllService cardAllService;
+    private final CardTransferService cardTransferService;
+
+    /**
+     * Принимает CardTransferDto, с записью в БД.
+     *
+     * @param cardTransferDto
+     * @return Void
+     */
+    @PostMapping("/transfer")
+    public ResponseEntity<Void> createFromTransfer(@RequestBody CardTransferDto cardTransferDto) {
+        cardTransferService.createFromTransfer(cardTransferDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @Operation(summary = "Создать новую карту", description = "Создаёт новую карту и возвращает её данные")
     @ApiResponse(responseCode = "201", description = "Карта успешно создана",

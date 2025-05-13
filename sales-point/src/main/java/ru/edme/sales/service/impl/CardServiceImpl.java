@@ -7,9 +7,12 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.edme.dto.CardTransferDto;
 import ru.edme.sales.dto.requestDto.CardRequestDto;
 import ru.edme.sales.dto.responseDto.CardResponseDto;
+import ru.edme.sales.dto.responseDto.PaymentSystemResponseDto;
 import ru.edme.sales.exception.EntityNotFoundException;
+import ru.edme.sales.feignClient.ProcessingCenterClient;
 import ru.edme.sales.mapper.CardMapper;
 import ru.edme.sales.mapper.PaymentSystemMapper;
 import ru.edme.sales.model.Card;
@@ -17,6 +20,8 @@ import ru.edme.sales.model.PaymentSystem;
 import ru.edme.sales.repository.CardRepository;
 import ru.edme.sales.repository.PaymentSystemRepository;
 import ru.edme.sales.service.CardService;
+import ru.edme.sales.service.CardTransferService;
+import ru.edme.sales.service.PaymentSystemService;
 import ru.edme.sales.util.ListWrapper;
 import ru.edme.sales.util.MoonAlgorithm;
 
@@ -26,12 +31,33 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CardServiceImpl implements CardService {
+public class CardServiceImpl implements CardService, CardTransferService {
 
     private final CardRepository cardRepository;
     private final PaymentSystemRepository paymentSystemRepository;
+    private final PaymentSystemService paymentSystemService;
     private final CardMapper cardMapper;
     private final PaymentSystemMapper paymentSystemMapper;
+    private final ProcessingCenterClient processingCenterClient;
+
+    /**
+     * Принимает и преобразовывает CardTransferDto, с записью в БД.
+     *
+     * @param cardTransferDto
+     */
+    @Override
+    @Transactional
+    public void createFromTransfer(CardTransferDto cardTransferDto) {
+        log.info("Карта из processing-center принята.");
+
+        PaymentSystemResponseDto paymentSystemResponseDto = paymentSystemService
+                .findById(cardTransferDto.getPaymentSystemId());
+        CardRequestDto requestDto = cardMapper.toCardRequestDto(cardTransferDto);
+        requestDto.setPaymentSystem(paymentSystemMapper.toPaymentSystemRequestDto(paymentSystemResponseDto));
+        CardResponseDto saved = save(requestDto);
+
+        log.info("Карта из processing-center записана в БД. - {}", saved);
+    }
 
     @Override
     @Transactional
@@ -49,6 +75,8 @@ public class CardServiceImpl implements CardService {
         Card card = cardMapper.toCard(cardRequestDTO);
         card.setPaymentSystem(paymentSystemNew);
         Card saved = cardRepository.save(card);
+
+        // TODO: 13.05.2025    processingCenterClient.transferToProcessingCenter();
 
         return cardMapper.toCardResponseDto(saved);
     }
@@ -96,5 +124,19 @@ public class CardServiceImpl implements CardService {
         cardRepository.delete(card);
 
         return true;
+    }
+
+    // TODO: 13.05.2025 Из sales-point в processing-center нечего отправлять! Нужно удалить, то что написал!
+    private CardTransferDto toCardTransferDtoToProcessingCenter(Card card) {
+        return new CardTransferDto(
+                card.getCardNumber(),
+                card.getExpirationDate(),
+                card.getHolderName(),
+                null,
+                card.getPaymentSystem().getId(),
+                null,
+                null,
+                null
+        );
     }
 }

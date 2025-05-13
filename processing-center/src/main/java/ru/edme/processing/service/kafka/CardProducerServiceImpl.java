@@ -26,7 +26,7 @@ public class CardProducerServiceImpl implements CardProducerService {
     @Value("${spring.kafka.topics.card-transfer-to-issuing}")
     private String topic;
 
-    @Override // Асинхронный режим
+    @Override
     public void sendCard(CardDto cardDto, LocalDateTime dateTime) {
         CardTransferDto cardTransferDto = mapperToCardTransferDto(cardDto, dateTime);
         CompletableFuture<SendResult<String, CardTransferDto>> future = kafkaTemplate.send(topic, key, cardTransferDto);

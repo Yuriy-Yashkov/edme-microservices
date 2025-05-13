@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.edme.dto.CardTransferDto;
 import ru.edme.processing.dto.AccountDto;
 import ru.edme.processing.dto.CardDto;
+import ru.edme.processing.dto.CardStatusDto;
+import ru.edme.processing.dto.PaymentSystemDto;
+import ru.edme.processing.feignClient.SalesPointClient;
 import ru.edme.processing.mapper.AccountMapper;
 import ru.edme.processing.mapper.CardMapper;
 import ru.edme.processing.mapper.CardStatusMapper;
@@ -24,7 +28,11 @@ import ru.edme.processing.repository.CardStatusRepository;
 import ru.edme.processing.repository.CurrencyRepository;
 import ru.edme.processing.repository.IssuingBankRepository;
 import ru.edme.processing.repository.PaymentSystemRepository;
+import ru.edme.processing.service.AccountAllService;
 import ru.edme.processing.service.CardAllService;
+import ru.edme.processing.service.CardStatusAllService;
+import ru.edme.processing.service.CardTransferService;
+import ru.edme.processing.service.PaymentSystemAllService;
 import ru.edme.processing.service.kafka.CardProducerService;
 import ru.edme.processing.util.MoonAlgorithm;
 
@@ -35,7 +43,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CardSpringAllServiceImpl implements CardAllService {
+public class CardSpringAllServiceImpl implements CardAllService, CardTransferService {
 
     private final CardRepository cardRepository;
     private final CardStatusRepository cardStatusRepository;
@@ -50,6 +58,40 @@ public class CardSpringAllServiceImpl implements CardAllService {
     private final CurrencyMapper currencyMapper;
     private final IssuingBankMapper issuingBankMapper;
     private final CardProducerService cardProducerService;
+    private final CardStatusAllService cardStatusAllService;
+    private final PaymentSystemAllService paymentSystemAllService;
+    private final AccountAllService accountAllService;
+    private final SalesPointClient salesPointClient;
+
+    /**
+     * Принимает и преобразовывает CardTransferDto, с записью в БД.
+     *
+     * @param cardTransferDto
+     */
+    @Override
+//    @Transactional
+    public void createFromTransfer(CardTransferDto cardTransferDto) {
+        log.info("Карта из sales-point принята.");
+
+        CardStatusDto cardStatusDto = cardStatusAllService.findById(cardTransferDto.getCardStatusId());
+        PaymentSystemDto paymentSystemDto = paymentSystemAllService.findById(cardTransferDto.getPaymentSystemId());
+        AccountDto accountDto = accountAllService.findById(cardTransferDto.getAccountId());
+
+        CardDto card = new CardDto(
+                0,
+                cardTransferDto.getCardNumber(),
+                cardTransferDto.getExpirationDate(),
+                cardTransferDto.getHolderName(),
+                cardStatusDto,
+                paymentSystemDto,
+                accountDto,
+                LocalDateTime.now(),
+                null
+        );
+        Card saved = cardRepository.save(cardMapper.toCard(card));
+
+        log.info("Карта из sales-point записана в БД. - {}", saved);
+    }
 
     @Override
     @Transactional
@@ -82,7 +124,8 @@ public class CardSpringAllServiceImpl implements CardAllService {
         Card card = cardMapper.toCard(cardDto);
         Card saved = cardRepository.save(card);
 
-        cardProducerService.sendCard(cardDto, dateTime);
+        cardProducerService.sendCard(cardDto, dateTime); // отправка в issuing-bank
+        salesPointClient.transferToSalesPoint(toCardTransferDtoToSalesPoint(saved)); // отправка в sales-point
 
         return cardMapper.toCardDto(saved);
     }
@@ -130,5 +173,18 @@ public class CardSpringAllServiceImpl implements CardAllService {
         cardRepository.delete(card);
 
         return true;
+    }
+
+    private CardTransferDto toCardTransferDtoToSalesPoint(Card card) {
+        return new CardTransferDto(
+                card.getCardNumber(),
+                card.getExpirationDate(),
+                card.getHolderName(),
+                null,
+                card.getPaymentSystem().getId(),
+                null,
+                null,
+                null
+        );
     }
 }

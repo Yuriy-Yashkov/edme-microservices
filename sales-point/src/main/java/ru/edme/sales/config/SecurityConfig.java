@@ -65,7 +65,8 @@ public class SecurityConfig {
                                 "/v3/api-docs.yaml",
                                 "/api/v1/auth/**",
                                 "/v1/tables/**",
-                                "/api/v1/test"
+                                "/api/v1/test",
+                                "/v1/sales-point/cards/transfer"
                         ).permitAll() // Публичные эндпоинты
                         .anyRequest().authenticated() // Остальное для всех аутентифицированных пользователей. Или все остальные запросы требуют авторизации.
                 )
