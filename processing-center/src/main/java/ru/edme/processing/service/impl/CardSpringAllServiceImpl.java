@@ -1,7 +1,9 @@
 package ru.edme.processing.service.impl;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edme.dto.CardTransferDto;
@@ -9,6 +11,10 @@ import ru.edme.processing.dto.AccountDto;
 import ru.edme.processing.dto.CardDto;
 import ru.edme.processing.dto.CardStatusDto;
 import ru.edme.processing.dto.PaymentSystemDto;
+import ru.edme.processing.exception.ClientErrorException;
+import ru.edme.processing.exception.EmptyResponseException;
+import ru.edme.processing.exception.RetryableRemoteServiceException;
+import ru.edme.processing.exception.ServerErrorException;
 import ru.edme.processing.feignClient.SalesPointClient;
 import ru.edme.processing.mapper.AccountMapper;
 import ru.edme.processing.mapper.CardMapper;
@@ -62,6 +68,7 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
     private final PaymentSystemAllService paymentSystemAllService;
     private final AccountAllService accountAllService;
     private final SalesPointClient salesPointClient;
+    private final RetryTemplate retryTemplate;
 
     /**
      * Принимает и преобразовывает CardTransferDto, с записью в БД.
@@ -125,7 +132,7 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
         Card saved = cardRepository.save(card);
 
         cardProducerService.sendCard(cardDto, dateTime); // отправка в issuing-bank
-        salesPointClient.transferToSalesPoint(toCardTransferDtoToSalesPoint(saved)); // отправка в sales-point
+        transferToSalesPointWithRetry(toCardTransferDtoToSalesPoint(saved)); // отправка в sales-point
 
         return cardMapper.toCardDto(saved);
     }
@@ -187,4 +194,26 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
                 null
         );
     }
+
+    private void transferToSalesPointWithRetry(CardTransferDto cardTransferDto) {
+        try {
+            retryTemplate.execute(context -> {
+                try {
+                    salesPointClient.transferToSalesPoint(cardTransferDto);
+                    return null; // void-метод
+                } catch (FeignException e) {
+                    if (e.status() >= 500) {
+                        throw new ServerErrorException("Ошибка 5xx от sales-point", e);
+                    } else if (e.status() == -1) {
+                        throw new EmptyResponseException("Пустой ответ от sales-point", e);
+                    } else {
+                        throw new ClientErrorException("Ошибка 4xx от sales-point", e);
+                    }
+                }
+            });
+        } catch (ServerErrorException | EmptyResponseException ex) {
+            throw new RetryableRemoteServiceException("Не удалось отправить данные в sales-point после повторов", ex);
+        }
+    }
+
 }

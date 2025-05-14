@@ -76,7 +76,8 @@ public class CardServiceImpl implements CardService, CardTransferService {
         card.setPaymentSystem(paymentSystemNew);
         Card saved = cardRepository.save(card);
 
-        // TODO: 13.05.2025    processingCenterClient.transferToProcessingCenter();
+        // TODO: 13.05.2025 удалить!!!
+        // processingCenterClient.transferToProcessingCenter(toCardTransferDtoToProcessingCenter(saved));
 
         return cardMapper.toCardResponseDto(saved);
     }
