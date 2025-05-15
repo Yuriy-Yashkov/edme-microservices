@@ -215,5 +215,4 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
             throw new RetryableRemoteServiceException("Не удалось отправить данные в sales-point после повторов", ex);
         }
     }
-
 }

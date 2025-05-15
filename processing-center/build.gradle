@@ -49,6 +49,8 @@ dependencies {
     testImplementation 'org.liquibase:liquibase-core'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+
 }
 
 dependencyManagement {

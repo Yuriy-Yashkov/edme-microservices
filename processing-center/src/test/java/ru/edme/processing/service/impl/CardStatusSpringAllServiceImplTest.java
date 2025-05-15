@@ -12,9 +12,6 @@ import ru.edme.processing.util.TestData;
 import java.util.List;
 
 @SpringBootTest // Запускает контекст всего приложения
-//@RequiredArgsConstructor // Не хочет внедрять
-//@AllArgsConstructor      // через конструктор
-//@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL) // Включает автоматическое внедрение в конструктор теста.
 class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Autowired
