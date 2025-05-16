@@ -137,7 +137,6 @@ class SalesPointClientIntegrationTest {
         assertEquals(3, mockWebServer.getRequestCount());
     }
 
-
     @TestConfiguration
     static class TestLoadBalancerConfig {
 
@@ -149,7 +148,8 @@ class SalesPointClientIntegrationTest {
                     return "sales-point";
                 }
 
-                @Override //Мы подменяем поведение Eureka: говорим, что "sales-point" — это localhost:порт, где работает mockWebServer.
+                @Override
+                //Мы подменяем поведение Eureka: говорим, что "sales-point" — это localhost:порт, где работает mockWebServer.
                 public Flux<List<ServiceInstance>> get() {
                     return Flux.just(List.of(new DefaultServiceInstance(
                             "sales-point-1", getServiceId(), "localhost", mockWebServer.getPort(), false

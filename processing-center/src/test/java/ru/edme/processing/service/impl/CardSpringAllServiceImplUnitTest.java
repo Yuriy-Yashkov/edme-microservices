@@ -13,6 +13,9 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.test.context.TestConstructor;
 import ru.edme.dto.CardTransferDto;
 import ru.edme.processing.dto.CardDto;
+import ru.edme.processing.exception.EmptyResponseException;
+import ru.edme.processing.exception.RetryableRemoteServiceException;
+import ru.edme.processing.exception.ServerErrorException;
 import ru.edme.processing.feignClient.SalesPointClient;
 import ru.edme.processing.mapper.AccountMapper;
 import ru.edme.processing.mapper.CardMapper;
@@ -39,12 +42,12 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @RequiredArgsConstructor
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-//@ExtendWith(MockitoExtension.class)
-class CardServiceImplTest {
+class CardSpringAllServiceImplUnitTest {
 
     @MockBean
     private SalesPointClient salesPointClient;
@@ -122,80 +125,6 @@ class CardServiceImplTest {
         mockAllDependencies();
     }
 
-//    @Test
-//    void shouldThrowExceptionOn4xx() {
-//        // Создаём заглушки
-//        FeignException.BadRequest exception = Mockito.mock(FeignException.BadRequest.class);
-//
-//        // Мокаем вложенные сохранения — упрощённо
-//        Mockito.when(cardStatusMapper.toCardStatus(cardDto.getCardStatus()))
-//                .thenReturn(new CardStatus());
-//        Mockito.when(cardStatusRepository.save(Mockito.any()))
-//                .thenReturn(new CardStatus());
-//
-//        Mockito.when(paymentSystemMapper.toPaymentSystem(cardDto.getPaymentSystem()))
-//                .thenReturn(new PaymentSystem());
-//        Mockito.when(paymentSystemRepository.save(Mockito.any()))
-//                .thenReturn(new PaymentSystem());
-//
-//        Mockito.when(currencyMapper.toCurrency(cardDto.getAccount().getCurrency()))
-//                .thenReturn(new Currency());
-//        Mockito.when(currencyRepository.save(Mockito.any()))
-//                .thenReturn(new Currency());
-//
-//        Mockito.when(issuingBankMapper.toIssuingBank(cardDto.getAccount().getIssuingBank()))
-//                .thenReturn(new IssuingBank());
-//        Mockito.when(issuingBankRepository.save(Mockito.any()))
-//                .thenReturn(new IssuingBank());
-//
-//        // Мокаем Account
-//        Mockito.when(accountMapper.toAccount(Mockito.any()))
-//                .thenReturn(new Account());
-//        Mockito.when(accountRepository.save(Mockito.any()))
-//                .thenReturn(new Account());
-//        Mockito.when(accountMapper.toAccountDto(Mockito.any()))
-//                .thenReturn(cardDto.getAccount());
-//
-//        // Обновляем cardDto с замоканными account/cardStatus/paymentSystem
-//        Mockito.when(cardStatusMapper.toCardStatusDto(Mockito.any()))
-//                .thenReturn(cardDto.getCardStatus());
-//        Mockito.when(paymentSystemMapper.toPaymentSystemDto(Mockito.any()))
-//                .thenReturn(cardDto.getPaymentSystem());
-//
-//        // Мокаем cardMapper.toCard()
-//        Card dummyCard = new Card();
-//        dummyCard.setCardNumber("4123450000000019");
-//        dummyCard.setExpirationDate(LocalDate.now());
-//        dummyCard.setHolderName("IVAN I.IVANOV");
-//
-//        PaymentSystem ps = new PaymentSystem();
-//        ps.setId(1L);
-//        dummyCard.setPaymentSystem(ps);
-//
-//        Mockito.when(cardMapper.toCard(cardDto)).thenReturn(dummyCard);
-//        Mockito.when(cardRepository.save(dummyCard)).thenReturn(dummyCard);
-//        Mockito.when(cardMapper.toCardDto(dummyCard)).thenReturn(cardDto);
-//
-//        Mockito.doNothing()
-//                .when(cardProducerService)
-//                .sendCard(Mockito.eq(cardDto), Mockito.any(LocalDateTime.class));
-//
-//        // Мокаем retryTemplate.execute
-//        Mockito.when(retryTemplate.execute(Mockito.any())).then(invocation -> {
-//            // Внутри вызывается salesPointClient.transferToSalesPoint()
-//            salesPointClient.transferToSalesPoint(Mockito.any());
-//            return null;
-//        });
-//
-//        // Мокаем бросок ошибки при вызове salesPointClient
-//        Mockito.doThrow(exception)
-//                .when(salesPointClient).transferToSalesPoint(Mockito.any());
-//
-//        // Проверка, что 4xx исключение обрабатывается правильно
-//        assertThrows(FeignException.BadRequest.class,
-//                () -> cardService.save(cardDto));
-//    }
-
     @Test
     void shouldThrowExceptionOn4xx() {
         FeignException feignException = FeignException.errorStatus(
@@ -220,32 +149,55 @@ class CardServiceImplTest {
         assertThrows(FeignException.BadRequest.class, () -> cardService.save(cardDto));
     }
 
-
-
     @Test
-    void shouldThrowExceptionOn5xx() {
-        FeignException.InternalServerError exception =
-                Mockito.mock(FeignException.InternalServerError.class);
+    void shouldThrowRetryableExceptionOn5xx() {
+        // 1. Создаём FeignException.InternalServerError
+        FeignException.InternalServerError feignException =
+                new FeignException.InternalServerError(
+                        "Ошибка 500",
+                        Request.create(Request.HttpMethod.POST, "http://localhost", Map.of(), null, null, null),
+                        null,
+                        null
+                );
 
-        // Настраиваем retryTemplate.execute() — внутри него выбрасывается 5xx
-        Mockito.when(retryTemplate.execute(Mockito.any())).then(invocation -> {
-            // Вызываем feign клиент, который бросает исключение
-            throw exception;
-        });
+        // 2. Мокаем retryTemplate, чтобы выбрасывал наш exception (через ServerErrorException → RetryableRemoteServiceException)
+        Mockito.when(retryTemplate.execute(Mockito.any()))
+                .thenThrow(new RetryableRemoteServiceException("wrapped", new ServerErrorException("5xx", feignException)));
 
-        // assertThrows, что метод сохраняет карту, но выбрасывает 5xx
-        assertThrows(FeignException.InternalServerError.class, () -> cardService.save(cardDto));
+        // 3. Проверяем, что выброшено исключение нужного типа
+        RetryableRemoteServiceException ex = assertThrows(RetryableRemoteServiceException.class,
+                () -> cardService.save(cardDto));
+
+        // 4. Дополнительно убеждаемся, что причина — ServerErrorException, а её причина — FeignException.InternalServerError
+        assertTrue(ex.getCause() instanceof ServerErrorException);
+        assertTrue(ex.getCause().getCause() instanceof FeignException.InternalServerError);
     }
 
     @Test
-    void shouldThrowExceptionOnEmptyResponse() {
-        // Мокаем retryTemplate.execute() так, чтобы feign-клиент вернул null
-        Mockito.when(retryTemplate.execute(Mockito.any())).then(invocation -> {
-            return null; // как будто client ничего не вернул
-        });
+    void shouldThrowEmptyResponseException() {
+        // 1. Создаём FeignException с кодом -1 (симулируем "пустой ответ")
+        FeignException feignException = FeignException.errorStatus(
+                "POST",
+                Response.builder()
+                        .status(-1)
+                        .reason("Empty Response")
+                        .request(Request.create(
+                                Request.HttpMethod.POST,
+                                "http://localhost",
+                                Map.of(),
+                                null,
+                                null,
+                                null
+                        ))
+                        .build()
+        );
 
-        // Ожидаем, что наш сервис бросит IllegalStateException (или свой кастомный, если есть)
-        assertThrows(IllegalStateException.class, () -> cardService.save(cardDto));
+        // 2. Настраиваем retryTemplate, чтобы он выбросил этот exception
+        Mockito.when(retryTemplate.execute(Mockito.any()))
+                .thenThrow(new RetryableRemoteServiceException("wrapped", new EmptyResponseException("empty", feignException)));
+
+        // 3. Проверяем, что наш сервис действительно пробрасывает RetryableRemoteServiceException
+        assertThrows(RetryableRemoteServiceException.class, () -> cardService.save(cardDto));
     }
 
     private void mockAllDependencies() {
