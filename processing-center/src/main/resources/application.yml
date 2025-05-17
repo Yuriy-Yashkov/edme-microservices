@@ -30,6 +30,14 @@ spring:
       card-transfer-to-issuing: card-created-to-issuing-events-topic
       card-transfer-to-processing: card-created-to-processing-events-topic
       key: 1
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+tracing:
+  url: http://localhost:4317
+
 logging:
   level:
     root: INFO
@@ -37,3 +45,11 @@ logging:
       netflix:
         eureka: off
         discovery: off
+    io.opentelemetry: DEBUG
+    io.micrometer.tracing: DEBUG
+    org:
+      springframework:
+        boot:
+          autoconfigure=DEBUG:
+  file:
+    name: logs/processing-center.log

@@ -3,3 +3,27 @@ spring:
     name: sales-point
   config:
     import: configserver:http://localhost:8888
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+tracing:
+  url: http://localhost:4317
+
+logging:
+  level:
+    root: INFO
+    com:
+      netflix:
+        eureka: off
+        discovery: off
+    io.opentelemetry: DEBUG
+    io.micrometer.tracing: DEBUG
+    org:
+      springframework:
+        boot:
+          autoconfigure=DEBUG:
+  file:
+    name: logs/sales-point.log
