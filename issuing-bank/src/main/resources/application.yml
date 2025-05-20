@@ -37,3 +37,12 @@ logging:
       netflix:
         eureka: off
         discovery: off
+
+---
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/edme-realm

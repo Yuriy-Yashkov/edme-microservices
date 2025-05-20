@@ -53,3 +53,12 @@ logging:
           autoconfigure=DEBUG:
   file:
     name: logs/processing-center.log
+
+---
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/edme-realm

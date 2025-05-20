@@ -1,4 +1,4 @@
-package ru.edme;
+package ru.edme.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -38,6 +38,10 @@ dependencies {
 
     implementation 'ru.edme:common-dto:1.0-SNAPSHOT'
     implementation 'org.springframework.kafka:spring-kafka'
+    // Для проверки JWT
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
