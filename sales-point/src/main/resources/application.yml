@@ -19,12 +19,14 @@ logging:
       netflix:
         eureka: off
         discovery: off
-    io.opentelemetry: DEBUG
-    io.micrometer.tracing: DEBUG
+    io.opentelemetry: info
+    io.micrometer.tracing: info
     org:
       springframework:
         boot:
-          autoconfigure=DEBUG:
+          autoconfigure: info
+    org.springframework.security: debug
+    org.springframework.security.oauth2: debug
   file:
     name: logs/sales-point.log
 

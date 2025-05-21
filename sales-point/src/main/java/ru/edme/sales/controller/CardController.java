@@ -36,7 +36,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/sales-point/cards")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Card Controller", description = "Управление картами (Card)")
 public class CardController {
 
@@ -57,6 +57,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Создать новую карту", description = "Создаёт новую карту и возвращает её данные")
     @ApiResponse(responseCode = "201", description = "Карта успешно создана",
             content = @Content(mediaType = "application/json",
@@ -66,7 +67,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardService.save(cardRequestDTO));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @Operation(summary = "Получить карту по ID", description = "Возвращает карту по её уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Карта найдена",
             content = @Content(mediaType = "application/json",
@@ -77,6 +78,7 @@ public class CardController {
         return ResponseEntity.ok(cardService.findById(id));
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Получить список всех карт", description = "Возвращает все карты из базы данных")
     @ApiResponse(responseCode = "200", description = "Список карт",
             content = @Content(mediaType = "application/json",
