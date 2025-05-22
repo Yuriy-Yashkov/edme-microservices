@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("v1/processing-center/cards")
 @Tag(name = "Card Controller", description = "Управление картами (Card)")
 public class CardController {
@@ -50,6 +52,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @Operation(summary = "Создать новую карту", description = "Создаёт новую карту и возвращает её данные")
     @ApiResponse(responseCode = "201", description = "Карта успешно создана",
             content = @Content(mediaType = "application/json",
@@ -61,6 +64,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardAllService.save(entity));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @Operation(summary = "Получить карту по ID", description = "Возвращает карту по её уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Карта найдена",
             content = @Content(mediaType = "application/json",

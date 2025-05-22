@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +29,14 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("v1/processing-center/accounts")
 @Tag(name = "Account Controller", description = "Управление счетами (Account)")
 public class AccountController {
 
     private final AccountAllService accountAllService;
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @Operation(summary = "Создать новый аккаунт", description = "Создаёт новый аккаунт и возвращает его данные")
     @ApiResponse(responseCode = "201", description = "Аккаунт успешно создан",
             content = @Content(mediaType = "application/json",
@@ -43,6 +46,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountAllService.save(entity));
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @Operation(summary = "Получить аккаунт по ID", description = "Возвращает аккаунт по его уникальному идентификатору")
     @ApiResponse(responseCode = "200", description = "Аккаунт найден",
             content = @Content(mediaType = "application/json",

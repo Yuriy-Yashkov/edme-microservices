@@ -200,6 +200,8 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
             retryTemplate.execute(context -> {
                 try {
                     salesPointClient.transferToSalesPoint(cardTransferDto);
+                    log.info("Отправлено в sales-point: {}", cardTransferDto);
+
                     return null; // void-метод
                 } catch (FeignException e) {
                     if (e.status() >= 500) {

@@ -5,8 +5,8 @@ spring:
     import: configserver:http://localhost:8888
 
 logging:
-#  level:
-#    root: INFO
+  level:
+    root: INFO
 #    org.springframework.beans.factory.support.PostProcessorRegistrationDelegate: error
 #    com:
 #      netflix:

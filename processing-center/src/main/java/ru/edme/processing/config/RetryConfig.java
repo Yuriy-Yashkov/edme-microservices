@@ -15,7 +15,7 @@ public class RetryConfig {
     public RetryTemplate retryTemplate() {
         return RetryTemplate.builder()
                 .maxAttempts(3) // количество повторов
-                .fixedBackoff(100) // задержка между повторами (мс)
+                .fixedBackoff(1000) // задержка между повторами (мс)
                 .retryOn(ServerErrorException.class)
                 .retryOn(EmptyResponseException.class)
                 .build();
