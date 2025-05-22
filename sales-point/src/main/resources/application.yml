@@ -3,38 +3,3 @@ spring:
     name: sales-point
   config:
     import: configserver:http://localhost:8888
-
-management:
-  tracing:
-    enabled: true
-    sampling:
-      probability: 1.0
-tracing:
-  url: http://localhost:4317
-
-logging:
-  level:
-    root: INFO
-    com:
-      netflix:
-        eureka: off
-        discovery: off
-    io.opentelemetry: info
-    io.micrometer.tracing: info
-    org:
-      springframework:
-        boot:
-          autoconfigure: info
-    org.springframework.security: debug
-    org.springframework.security.oauth2: debug
-  file:
-    name: logs/sales-point.log
-
----
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8180/realms/edme-realm
