@@ -132,7 +132,10 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
         Card card = cardMapper.toCard(cardDto);
         Card saved = cardRepository.save(card);
 
-        cardProducerService.sendCard(cardDto, dateTime); // отправка в issuing-bank
+        // При первом вызове kafkaTemplate.send(...), клиент Kafka пытается получить метаданные о кластере
+        // (например, информацию о партициях и брокерах). Этот процесс выполняется синхронно и может блокировать поток,
+        // особенно если Kafka недоступна.
+        cardProducerService.sendCard(cardDto, dateTime); // отправка в issuing-bank.
         transferToSalesPointWithRetry(toCardTransferDtoToSalesPoint(saved)); // отправка в sales-point
 
         return cardMapper.toCardDto(saved);

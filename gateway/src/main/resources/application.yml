@@ -7,10 +7,10 @@ spring:
 logging:
   level:
     root: INFO
-#    org.springframework.beans.factory.support.PostProcessorRegistrationDelegate: error
-#    com:
-#      netflix:
-#        eureka: off
-#        discovery: off
+  #    org.springframework.beans.factory.support.PostProcessorRegistrationDelegate: error
+  #    com:
+  #      netflix:
+  #        eureka: off
+  #        discovery: off
   file:
     name: logs/gateway.log

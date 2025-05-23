@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 @Component
 public class CommonSecurityBeans {
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var converter = new JwtAuthenticationConverter();

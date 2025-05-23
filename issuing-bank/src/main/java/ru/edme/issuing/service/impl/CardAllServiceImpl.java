@@ -42,6 +42,9 @@ public class CardAllServiceImpl implements CardService {
         LocalDateTime dateTime = LocalDateTime.now();
         cardDto.setSentToProcessingCenter(dateTime);
 
+        // При первом вызове kafkaTemplate.send(...), клиент Kafka пытается получить метаданные о кластере
+        // (например, информацию о партициях и брокерах). Этот процесс выполняется синхронно и может блокировать поток,
+        // особенно если Kafka недоступна.
         cardProducerService.sendCard(cardDto, dateTime);
         Card saved = cardRepository.save(cardMapper.toCard(cardDto));
 

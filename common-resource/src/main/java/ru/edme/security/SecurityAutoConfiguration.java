@@ -6,4 +6,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(SecurityConfig.class)
 public class SecurityAutoConfiguration {
+
 }
