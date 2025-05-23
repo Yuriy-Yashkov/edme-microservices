@@ -7,10 +7,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.edme.processing.dto.IssuingBankDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.service.IssuingBankAllService;
 import ru.edme.processing.util.TestData;
 
@@ -21,8 +23,9 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(IssuingBankController.class)
 @RequiredArgsConstructor
+@WithMockUser(roles = "ADMIN")
+@WebMvcTest(IssuingBankController.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class IssuingBankControllerTest {
 
@@ -69,7 +72,7 @@ class IssuingBankControllerTest {
     @Test
     void findByIdShouldReturnNotFound() throws Exception {
         Long id = 100L;
-        Mockito.when(issuingBankAllService.findById(id)).thenThrow(new RuntimeException("Банк-эмитент не найден"));
+        Mockito.when(issuingBankAllService.findById(id)).thenThrow(new EntityNotFoundException("Банк-эмитент не найден"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/processing-center/issuing-banks/{id}", id))
                 .andExpect(status().isNotFound());

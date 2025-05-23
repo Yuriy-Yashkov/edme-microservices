@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.processing.PostgreSQLContainerInitializer;
 import ru.edme.processing.dto.AccountDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.service.AccountAllService;
 import ru.edme.processing.util.TestData;
 
@@ -13,9 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @SpringBootTest // Запускает контекст всего приложения
-//@RequiredArgsConstructor // Не хочет внедрять
-//@AllArgsConstructor      // через конструктор
-//@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL) // Включает автоматическое внедрение в конструктор теста.
 class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Autowired
@@ -42,7 +40,7 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnEmptyObjectTest() {
-        Assertions.assertThrows(RuntimeException.class, () -> accountAllService.findById(0L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> accountAllService.findById(0L));
     }
 
     @Test
@@ -77,6 +75,6 @@ class AccountSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     void deleteShouldReturnRuntimeExceptionTest() {
         accountAllService.delete(1L);
 
-        Assertions.assertThrows(RuntimeException.class, () -> accountAllService.findById(1L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> accountAllService.findById(1L));
     }
 }

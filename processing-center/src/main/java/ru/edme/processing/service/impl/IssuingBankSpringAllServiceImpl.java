@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edme.processing.dto.IssuingBankDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.mapper.IssuingBankMapper;
 import ru.edme.processing.model.IssuingBank;
 import ru.edme.processing.repository.IssuingBankRepository;
@@ -34,7 +35,7 @@ public class IssuingBankSpringAllServiceImpl implements IssuingBankAllService {
         return issuingBankRepository.findById(id)
                 .map(issuingBankMapper::toIssuingBankDto)
                 .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new EntityNotFoundException(
                                 String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
                 );
     }

@@ -7,10 +7,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.edme.processing.dto.CardStatusDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.service.CardStatusAllService;
 import ru.edme.processing.util.TestData;
 
@@ -24,8 +26,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CardStatusController.class)
 @RequiredArgsConstructor
+@WithMockUser(roles = "ADMIN")
+@WebMvcTest(CardStatusController.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class CardStatusControllerTest {
 
@@ -69,7 +72,7 @@ class CardStatusControllerTest {
 
     @Test
     void findById_ShouldReturnNotFound_WhenDoesNotExist() throws Exception {
-        when(cardStatusAllService.findById(anyLong())).thenThrow(new RuntimeException("Статус не найден"));
+        when(cardStatusAllService.findById(anyLong())).thenThrow(new EntityNotFoundException("Статус не найден"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/processing-center/card-statuses/100"))
                 .andExpect(status().isNotFound());

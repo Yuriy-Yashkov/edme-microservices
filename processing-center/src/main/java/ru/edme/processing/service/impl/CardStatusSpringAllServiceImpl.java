@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edme.processing.dto.CardStatusDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.mapper.CardStatusMapper;
 import ru.edme.processing.model.CardStatus;
 import ru.edme.processing.repository.CardStatusRepository;
@@ -34,7 +35,7 @@ public class CardStatusSpringAllServiceImpl implements CardStatusAllService {
         return cardStatusRepository.findById(id)
                 .map(cardStatusMapper::toCardStatusDto)
                 .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new EntityNotFoundException(
                                 String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
                 );
     }

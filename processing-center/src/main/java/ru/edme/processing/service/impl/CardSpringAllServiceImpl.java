@@ -13,6 +13,7 @@ import ru.edme.processing.dto.CardStatusDto;
 import ru.edme.processing.dto.PaymentSystemDto;
 import ru.edme.processing.exception.ClientErrorException;
 import ru.edme.processing.exception.EmptyResponseException;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.exception.RetryableRemoteServiceException;
 import ru.edme.processing.exception.ServerErrorException;
 import ru.edme.processing.feignClient.SalesPointClient;
@@ -142,7 +143,7 @@ public class CardSpringAllServiceImpl implements CardAllService, CardTransferSer
         return cardRepository.findById(id)
                 .map(cardMapper::toCardDto)
                 .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new EntityNotFoundException(
                                 String.format("Не удалось прочитать объект! - %s = %d", Card.class.getSimpleName(), id))
                 );
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edme.processing.dto.PaymentSystemDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.mapper.PaymentSystemMapper;
 import ru.edme.processing.model.PaymentSystem;
 import ru.edme.processing.repository.PaymentSystemRepository;
@@ -34,7 +35,7 @@ public class PaymentSystemSpringAllServiceImpl implements PaymentSystemAllServic
         return paymentSystemRepository.findById(id)
                 .map(paymentSystemMapper::toPaymentSystemDto)
                 .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new EntityNotFoundException(
                                 String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
                 );
     }

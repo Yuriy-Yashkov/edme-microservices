@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.edme.processing.dto.AccountDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.mapper.AccountMapper;
 import ru.edme.processing.mapper.CurrencyMapper;
 import ru.edme.processing.mapper.IssuingBankMapper;
@@ -50,7 +51,7 @@ public class AccountSpringAllServiceImpl implements AccountAllService {
         return accountRepository.findById(id)
                 .map(accountMapper::toAccountDto)
                 .orElseThrow(
-                        () -> new RuntimeException(
+                        () -> new EntityNotFoundException(
                                 String.format("Не удалось прочитать объект! - %s = %d", entityClass.getSimpleName(), id))
                 );
     }

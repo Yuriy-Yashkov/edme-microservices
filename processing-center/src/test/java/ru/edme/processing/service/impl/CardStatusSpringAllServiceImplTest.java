@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.processing.PostgreSQLContainerInitializer;
 import ru.edme.processing.dto.CardStatusDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.service.CardStatusAllService;
 import ru.edme.processing.util.TestData;
 
@@ -38,7 +39,7 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
 
     @Test
     void findByIdShouldReturnEmptyObjectTest() {
-        Assertions.assertThrows(RuntimeException.class, () -> cardStatusAllService.findById(0L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> cardStatusAllService.findById(0L));
     }
 
     @Test
@@ -72,6 +73,6 @@ class CardStatusSpringAllServiceImplTest extends PostgreSQLContainerInitializer 
     void deleteShouldReturnRuntimeExceptionTest() {
         cardStatusAllService.delete(1L);
 
-        Assertions.assertThrows(RuntimeException.class, () -> cardStatusAllService.findById(1L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> cardStatusAllService.findById(1L));
     }
 }

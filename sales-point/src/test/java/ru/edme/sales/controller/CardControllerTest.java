@@ -1,21 +1,20 @@
 package ru.edme.sales.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.edme.sales.dto.requestDto.CardRequestDto;
 import ru.edme.sales.dto.responseDto.CardResponseDto;
-import ru.edme.sales.mapper.CardMapper;
 import ru.edme.sales.service.CardService;
+import ru.edme.sales.service.CardTransferService;
 import ru.edme.sales.util.ListWrapper;
 import ru.edme.sales.util.TestData;
 
@@ -28,17 +27,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@RequiredArgsConstructor
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@WithMockUser(username = "yriy", password = "123", authorities = "ADMIN")
+@WithMockUser(username = "yriy", password = "123", roles = "ADMIN")
 class CardControllerTest {
 
-    private final ObjectMapper objectMapper;
-    private final MockMvc mockMvc;
-    private final CardMapper cardMapper;
+    @Autowired
+    private  ObjectMapper objectMapper;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @MockBean
     private CardService cardService;
+
+    @MockBean
+    private CardTransferService cardTransferService;
 
     TestData testData = new TestData();
 

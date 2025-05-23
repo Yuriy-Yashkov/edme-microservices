@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<String> handleNotFoundException(RuntimeException ex) {
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-//    }
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
     /**
      * Обрабатывает ошибки клиента (HTTP 4xx).

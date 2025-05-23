@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.edme.processing.PostgreSQLContainerInitializer;
 import ru.edme.processing.dto.CurrencyDto;
+import ru.edme.processing.exception.EntityNotFoundException;
 import ru.edme.processing.service.CurrencyAllService;
 import ru.edme.processing.util.TestData;
 
@@ -38,7 +39,7 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnEmptyObjectTest() {
-        Assertions.assertThrows(RuntimeException.class, () -> currencyAllService.findById(0L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> currencyAllService.findById(0L));
     }
 
     @Test
@@ -73,6 +74,6 @@ class CurrencySpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     void deleteShouldReturnRuntimeExceptionTest() {
         currencyAllService.delete(1L);
 
-        Assertions.assertThrows(RuntimeException.class, () -> currencyAllService.findById(1L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> currencyAllService.findById(1L));
     }
 }

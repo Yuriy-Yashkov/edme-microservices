@@ -8,11 +8,13 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.edme.processing.dto.CardDto;
 import ru.edme.processing.service.CardAllService;
+import ru.edme.processing.service.CardTransferService;
 import ru.edme.processing.util.TestData;
 
 import java.time.LocalDate;
@@ -23,8 +25,9 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CardController.class)
 @RequiredArgsConstructor
+@WithMockUser(roles = "ADMIN")
+@WebMvcTest(CardController.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class CardControllerTest {
 
@@ -34,10 +37,13 @@ class CardControllerTest {
     @MockBean
     private CardAllService cardAllService;
 
+    @MockBean
+    private CardTransferService cardTransferService;
+
     TestData testData = new TestData();
 
     @Test
-    void testt() throws JsonProcessingException {
+    void test() throws JsonProcessingException {
         LocalDate date = LocalDate.of(2025, 3, 30);
         String json = objectMapper.writeValueAsString(date);
         System.out.println(json);  // Должно быть "2025-03-30"

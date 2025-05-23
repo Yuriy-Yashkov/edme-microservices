@@ -4,12 +4,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.edme.processing.PostgreSQLContainerInitializer;
 import ru.edme.processing.dto.CardDto;
+import ru.edme.processing.exception.EntityNotFoundException;
+import ru.edme.processing.feignClient.SalesPointClient;
 import ru.edme.processing.service.CardAllService;
+import ru.edme.processing.service.kafka.CardProducerService;
 import ru.edme.processing.util.TestData;
 
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
@@ -17,16 +25,31 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     @Autowired
     private CardAllService cardAllService;
 
+    @MockBean
+    private CardProducerService cardProducerService;  // отключаем Kafka
+
+    @MockBean
+    private SalesPointClient salesPointClient; // отключаем Feign клиент
+
     @Test
     void saveShouldCreateObjectTest() {
         TestData testData = new TestData();
         CardDto cardDto = testData.cardDto;
         long expected = 1;
 
+        // Поведение мока можно явно указать, если нужно
+        doNothing().when(cardProducerService).sendCard(any(), any());
+        doNothing().when(salesPointClient).transferToSalesPoint(any());
+
         CardDto cardSaved = cardAllService.save(cardDto);
         long actual = cardSaved.getId();
 
         Assertions.assertTrue(expected <= actual);
+
+        // проверка, что мок(метод сервиса), вызывался.
+        verify(cardProducerService).sendCard(any(), any());
+        verify(salesPointClient).transferToSalesPoint(any());
+
     }
 
     @Test
@@ -38,7 +61,7 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
 
     @Test
     void findByIdShouldReturnEmptyObjectTest() {
-        Assertions.assertThrows(RuntimeException.class, () -> cardAllService.findById(0L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> cardAllService.findById(0L));
     }
 
     @Test
@@ -73,6 +96,6 @@ class CardSpringAllServiceImplTest extends PostgreSQLContainerInitializer {
     void deleteShouldReturnRuntimeExceptionTest() {
         cardAllService.delete(1L);
 
-        Assertions.assertThrows(RuntimeException.class, () -> cardAllService.findById(1L));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> cardAllService.findById(1L));
     }
 }
