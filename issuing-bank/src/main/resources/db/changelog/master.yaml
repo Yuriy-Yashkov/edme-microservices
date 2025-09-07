@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_client
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/client.sql
+  - changeSet:
+      id: create_account_type
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/account_type.sql
+  - changeSet:
+      id: create_currency
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/currency.sql
+  - changeSet:
+      id: create_transaction_type
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/transaction_type.sql
+  - changeSet:
+      id: create_bank_setting
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/bank_setting.sql
+  - changeSet:
+      id: create_card_status
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/card_status.sql
+  - changeSet:
+      id: create_payment_system
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/payment_system.sql
+  - changeSet:
+      id: create_account
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/account.sql
+  - changeSet:
+      id: create_card
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/card.sql
+  - changeSet:
+      id: create_transaction
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: db/changelog/ddl/transaction.sql
+  - changeSet:
+      id: table_data
+      author: Yury Yashkov
+      changes:
+        - sqlFile:
+            path: /db/changelog/dml/dataTables.sql

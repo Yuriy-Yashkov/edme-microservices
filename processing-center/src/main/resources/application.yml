@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: processing-center
+  config:
+    import: configserver:http://localhost:8888
